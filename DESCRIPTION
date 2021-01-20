@@ -19,5 +19,6 @@ Imports:
     VineCopula,
     stats,
     graphics,
-    utils
+    utils,
+    mosum
 Remotes: cran/CDVine

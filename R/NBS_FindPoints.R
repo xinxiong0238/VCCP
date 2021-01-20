@@ -14,7 +14,7 @@ MultiInd <- function(X, start, end) {
 #' @importFrom CDVine CDVineCopSelect
 #' @importFrom CDVine CDVineBIC
 
-NBS.VC.FindPoints <- function(X_raw, delta, CDR = "D", trunc_tree = NA, family_set0 = 1, pre_white = 0, ar_num = 1) {
+VC_NBS_FindPoints <- function(X_raw, delta, CDR = "D", trunc_tree = NA, family_set = 1, pre_white = 0, ar_num = 1) {
   T <- length(unique(X_raw[, 1]))
   subnum <- dim(X_raw)[1] / T
   cut_point0 <- c(1, T + 1)
@@ -28,13 +28,11 @@ NBS.VC.FindPoints <- function(X_raw, delta, CDR = "D", trunc_tree = NA, family_s
       ar_resid[which(is.na(ar_resid) == TRUE)] <- 0
       X[((i - 1) * T + 1):(i * T), -1] <- ar_resid
     }
-  } else {
-    X <- X_raw
   }
   X[, -1] <- VineCopula::pobs(X[, -1])
   while (BIC_cut > 0) {
     k <- k + 1
-    print(k)
+    cat(paste("Binary search, round",k,"..."),fill = TRUE)
     BIC_de <- rep(0, T)
     for (i in delta:(T - delta)) {
       if (sum(is.element((i - delta + 1):(i + delta), cut_point0)) != 0) {
@@ -44,8 +42,6 @@ NBS.VC.FindPoints <- function(X_raw, delta, CDR = "D", trunc_tree = NA, family_s
         t_start <- cut_point0[which.max(i <= cut_point0) - 1]
         t_end <- cut_point0[which.max(i <= cut_point0)]
         if (CDR == "R") {
-          family_set0 <- c(0, family_set0)
-          family_set <- family_set0
           BIC_de[i] <- RVineStructureSelect(MultiInd(X, t_start, t_end),
             familyset = unlist(family_set),
             selectioncrit = "BIC", method = "mle",
@@ -61,10 +57,9 @@ NBS.VC.FindPoints <- function(X_raw, delta, CDR = "D", trunc_tree = NA, family_s
                 selectioncrit = "BIC", method = "mle",
                 indeptest = TRUE, trunclevel = trunc_tree
               )$BIC)
-          print(c(BIC_de[i], i))
+          #print(c(BIC_de[i], i))
         } else {
           if (CDR == "C") {
-            family_set <- family_set0
             BIC_de[i] <- RVineStructureSelect(MultiInd(X, t_start, t_end),
               familyset = unlist(family_set), type = 1,
               selectioncrit = "BIC", method = "mle",
@@ -80,9 +75,8 @@ NBS.VC.FindPoints <- function(X_raw, delta, CDR = "D", trunc_tree = NA, family_s
                   selectioncrit = "BIC", method = "mle",
                   indeptest = TRUE, trunclevel = trunc_tree
                 )$BIC)
-            print(c(BIC_de[i], i))
+            #print(c(BIC_de[i], i))
           } else {
-            family_set <- family_set0
             D_1 <- CDVineCopSelect(MultiInd(X, t_start, t_end),
               type = 2, familyset = unlist(family_set),
               selectioncrit = "BIC", indeptest = TRUE
@@ -109,13 +103,18 @@ NBS.VC.FindPoints <- function(X_raw, delta, CDR = "D", trunc_tree = NA, family_s
                     family = D_3$family, par = D_3$par, par2 = D_3$par2
                   )$BIC
               )
-            print(c(BIC_de[i], i))
+            #print(c(BIC_de[i], i))
           }
         }
       }
     }
     BIC_cut <- max(BIC_de)
     cut_new_point <- which.max(BIC_de)
+    if(BIC_cut > 0){
+      cat(paste("Find candidate",k,": t =",cut_new_point,"\n \n"),fill = TRUE)
+    }else{
+      cat(paste("No more candidate is found. \n \n"),fill = TRUE)
+    }
     cut_point0 <- sort(c(cut_point0, cut_new_point))
   }
   return(list(c(cut_point0[cut_point0 != cut_new_point & cut_point0 != T + 1 & cut_point0 != 1]), X))

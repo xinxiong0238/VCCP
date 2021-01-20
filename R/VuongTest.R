@@ -1,12 +1,10 @@
 #' @importFrom VineCopula RVineVuongTest
 #' @importFrom CDVine CDVineVuongTest
-Vuong_Multi_CDR_NewTestPoint <- function(t_point, t_start, t_end, X, delta, CDR, trunc_tree, family_set0) {
+Vuong_Multi_CDR_NewTestPoint <- function(t_point, t_start, t_end, X, delta, CDR, trunc_tree, family_set) {
   T <- length(unique(X[, 1]))
   subnum <- dim(X)[1] / T
-  family_set0 <- unlist(family_set0)
+  family_set <- unlist(family_set)
   if (CDR == "R") {
-    family_set0 <- c(0, family_set0)
-    family_set <- family_set0
     RV0 <- RVineStructureSelect(MultiInd(X, t_start, t_end),
       familyset = family_set,
       selectioncrit = "BIC", method = "mle",
@@ -31,8 +29,6 @@ Vuong_Multi_CDR_NewTestPoint <- function(t_point, t_start, t_end, X, delta, CDR,
     colnames(re) <- c("left Schwarz p", "right Schwarz p")
   } else {
     if (CDR == "C") {
-      family_set0 <- c(0, family_set0)
-      family_set <- family_set0
       RV0 <- RVineStructureSelect(MultiInd(X, t_start, t_end),
         familyset = family_set, type = 1,
         selectioncrit = "BIC", method = "mle",
@@ -56,7 +52,6 @@ Vuong_Multi_CDR_NewTestPoint <- function(t_point, t_start, t_end, X, delta, CDR,
       ), 1, 2)
       colnames(re) <- c("left Schwarz p", "right Schwarz p")
     } else {
-      family_set <- family_set0
       d <- dim(X)[2] - 1
       D_0 <- CDVineCopSelect(MultiInd(X, t_start, t_end),
         type = 2, familyset = unlist(family_set),
@@ -94,10 +89,11 @@ Vuong_Multi_CDR_NewTestPoint <- function(t_point, t_start, t_end, X, delta, CDR,
 
 
 #' @export
-Vuong.TestPoints <- function(v_t_point, X_raw, delta, CDR = "D", trunc_tree = NA, family_set = 1,
-                                         sig_alpha = 0.05, pre_white = 0, ar_num = 1) {
+TestPoints_Vuong <- function(v_t_point, X_raw, delta, CDR = "D", trunc_tree = NA, family_set = 1,
+                             pre_white = 0, ar_num = 1, sig_alpha = 0.05) {
   T <- length(unique(X_raw[, 1]))
-  subnum <- dim(X)[1] / T
+  subnum <- dim(X_raw)[1] / T
+  X <- X_raw
   if (pre_white == 1) {
     for (i in 1:subnum) {
       armodel <- stats::ar(X_raw[((i - 1) * T + 1):(i * T), -1], FALSE, ar_num)
@@ -105,8 +101,6 @@ Vuong.TestPoints <- function(v_t_point, X_raw, delta, CDR = "D", trunc_tree = NA
       ar_resid[which(is.na(ar_resid) == TRUE)] <- 0
       X[((i - 1) * T + 1):(i * T), -1] <- ar_resid
     }
-  } else {
-    X <- X_raw
   }
   X[, -1] <- VineCopula::pobs(X[, -1])
   test_result <- as.data.frame(matrix(0, length(v_t_point), 4))
@@ -138,9 +132,10 @@ Vuong.TestPoints <- function(v_t_point, X_raw, delta, CDR = "D", trunc_tree = NA
 }
 
 #' @export
-Vuong.GetTestPlot <- function(test_result, T, sig_alpha = 0.05) {
+GetTestPlot_Vuong <- function(test_result, T, sig_alpha = 0.05) {
   if (dim(test_result)[1] == 0) {
-    plot(1:100, 1:100)
+    plot(1:T,1:T,type = "n",yaxt="n",ylab = NA)
+    graphics::text("No candidate is found.")
   }
   else {
     LeftSch <- RightSch <- rep(0, T)
