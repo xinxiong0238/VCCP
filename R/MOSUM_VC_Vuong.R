@@ -102,15 +102,14 @@ FindLocalMax <- function(BIC_re, range_set) {
 
 
 
-#' @export
-VC_MOSUM_Vuong <- function(X_raw, delta, CDR = "D", trunc_tree = NA, family_set = 1, pre_white = 0, ar_num = 1,
-                           p = 0.3, N = 100, m_alpha = 0.05, sig_alpha = 0.05) {
+VC_MOSUM_Vuong <- function(X_raw, delta, G = 0.1, CDR = "D", trunc_tree = NA, family_set = 1, pre_white = 0, ar_num = 1,
+                           p = 0.3, N = 100, sig_alpha = 0.05) {
   cat("MOSUM search ...", fill = TRUE)
   re <- VuongMultiGenXLocal(X_raw, delta, CDR, trunc_tree, family_set, pre_white, ar_num)
   X <- re[[2]]
   T <- length(unique(X_raw[, 1]))
   BIC_re <- re[[1]]
-  te <- mosum::mosum(BIC_re, m_alpha)
+  te <- mosum::mosum(BIC_re, G)
   plot(te, display = "data", sub = "MOSUM segmentation")
   a <- sort(c(1, T + 1, te$cpts))
   ini_po <- a[!duplicated(a)]

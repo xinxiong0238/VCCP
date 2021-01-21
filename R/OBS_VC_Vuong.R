@@ -1,5 +1,4 @@
-#' @export
-OBS.VC.Vuong <- function(X_raw, delta, CDR = "D", trunc_tree = NA, family_set = 1, pre_white = 0, ar_num = 1,
+VC_OBS_Vuong <- function(X_raw, delta, CDR = "D", trunc_tree = NA, family_set = 1, pre_white = 0, ar_num = 1,
                          sig_alpha = 0.05) {
   T <- length(unique(X_raw[,1]))
   subnum <- dim(X_raw)[1]/T

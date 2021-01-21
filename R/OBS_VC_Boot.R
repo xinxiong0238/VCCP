@@ -1,5 +1,4 @@
-#' @export
-OBS.VC.Boot <- function(X_raw, delta, CDR = "D", trunc_tree = NA, family_set = 1, pre_white = 0, ar_num = 1,
+VC_OBS_Boot <- function(X_raw, delta, CDR = "D", trunc_tree = NA, family_set = 1, pre_white = 0, ar_num = 1,
                          p = 0.3, N = 100, sig_alpha = 0.05) {
   T <- length(unique(X_raw[, 1]))
   subnum <- dim(X_raw)[1] / T
