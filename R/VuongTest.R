@@ -193,7 +193,31 @@ TestPoints_Vuong <- function(v_t_point, X_raw, delta, CDR = "D", trunc_tree = NA
   }
 }
 
+
+#' Plot inference result from VCCP(Vuong test)
+#'
+#' \code{GetTestPlot_Boot} plots the possible change points in the connection network
+#'  and their significance tested by the Vuong method.
+#'
+#' @param test_result A 4-column dataframe; usually coming from the result
+#' of \code{\link{VCCP}} with \code{test} specified as 'V' or \code{\link{TestPoints_Vuong}}.
+#'
+#' @param T An integer; the length of the single-subject time series data.
+#'
+#' @param sig_alpha A decimal between 0 and 1; the significance level of the Vuong test, which
+#'  should be consistent with \code{sig_alpha} in \code{\link{VCCP}}.
+#'
 #' @export
+#' @examples
+#' data = cbind(1:180, random.mvn.simulate.2.changes(180,8,seed=101))
+#' result = VC_NBS_FindPoints(data, 30)
+#' inference = TestPoints_Vuong(result[[1]], data, delta=30)
+#' GetTestPlot_Vuong(inference, 180)
+#'
+#' inference.2 = VCCP(data, method = "OBS", 30, test = "V")
+#' GetTestPlot_Vuong(inference.2, 180)
+#'
+#' @seealso \code{\link{VCCP}}, \code{\link{TestPoints_Vuong}}
 GetTestPlot_Vuong <- function(test_result, T, sig_alpha = 0.05) {
   if (dim(test_result)[1] == 0) {
     plot(1:T,1:T,type = "n",yaxt="n",ylab = NA)

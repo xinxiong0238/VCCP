@@ -295,8 +295,28 @@ TestPoints_Boot <- function(v_t_point, X_raw, delta, CDR = "D", trunc_tree = NA,
 }
 
 
+
+#' Plot inference result from VCCP(Stationary Bootstrap)
+#'
+#' \code{GetTestPlot_Boot} plots the possible change points in the connection network
+#'  and their significance tested by the Stationary Bootstrap method.
+#'
+#' @param test_result A 5-column dataframe; usually coming from the result
+#' of \code{\link{VCCP}} with \code{test} specified as 'B'.
+#'
+#' @param T An integer; the length of the single-subject time series data.
+#'
 #' @export
-Boot_GetTestPlot <- function(test_result, T) {
+#' @examples
+#' data = cbind(1:180, random.mvn.simulate.2.changes(180,8,seed=101))
+#' result = VC_NBS_FindPoints(data, 30)
+#' inference = TestPoints_Boot(result[[1]], data, delta=30)
+#' GetTestPlot_Boot(inference, 180)
+#'
+#' inference.2 = VCCP(data, method = "OBS", 30, test = "B")
+#' GetTestPlot_Boot(inference.2, 180)
+#' @seealso \code{\link{VCCP}}, \code{\link{TestPoints_Boot}}
+GetTestPlot_Boot <- function(test_result, T) {
   if (dim(test_result)[1] == 0) {
     plot(1:T,1:T,type = "n",yaxt="n",ylab = NA)
     graphics::text("No candidate is found.")
