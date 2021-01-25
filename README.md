@@ -19,10 +19,10 @@ Stationary Bootstrap or Vuong test method.
 ## Installation
 
 You can install the released version of VCCP from
-[CRAN](https://CRAN.R-project.org) with:??
+[CRAN](https://CRAN.R-project.org) with:
 
 ``` r
-install.packages("VCCP")
+install.packages("VCCP") #not released yet!
 ```
 
 And the development version from [GitHub](https://github.com/) with:
