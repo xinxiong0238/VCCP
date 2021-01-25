@@ -2,7 +2,7 @@
 % Please edit documentation in R/NBS_FindPoints.R
 \name{VC.NBS.FindPoints}
 \alias{VC.NBS.FindPoints}
-\title{Find changes in the correlation network by the VC+NBS method}
+\title{Find change point candidates in the functional connectivity by VCCP (NBS) model}
 \usage{
 VC.NBS.FindPoints(
   X_raw,

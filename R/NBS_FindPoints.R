@@ -8,7 +8,7 @@ MultiInd <- function(X, start, end) {
   return(sam[, -1])
 }
 
-#' Find changes in the correlation network by the VC+NBS method
+#' Find change point candidates in the functional connectivity by VCCP (NBS) model
 #'
 #' \code{VC.NBS.FindPoints} returns possible change points in the correlation network
 #'  among the time series data.

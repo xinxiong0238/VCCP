@@ -184,7 +184,7 @@ Multi_CDR_NewTestPoint <- function(t_point, t_start, t_end, X, delta, CDR, trunc
 }
 
 
-#' Test change points in connection network by Stationary Bootstrap
+#' Perform inference for change points in the functional connectivity by Stationary Bootstrap
 #'
 #' \code{TestPoints.Boot} returns a dataframe containing the inference result
 #' of significant change points in the connection network among the multi/single-subject

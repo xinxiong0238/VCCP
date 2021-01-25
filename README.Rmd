@@ -1,0 +1,81 @@
+---
+output: github_document
+---
+
+<!-- README.md is generated from README.Rmd. Please edit that file -->
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>",
+  fig.path = "man/figures/README-",
+  out.width = "100%"
+)
+```
+
+# VCCP
+
+<!-- badges: start -->
+<!-- badges: end -->
+
+The goal of VCCP is to implement Vine Copula Change Points (VCCP) model to estimate the number and location of multiple change points in the functional connectivity structure of multivariate time series. Possible binary segmentation methods of the VCCP model include NBS, OBS, MOSUM, and WBS. You can also check the significance of detected candidates by Stationary Bootstrap or Vuong test method.
+
+## Installation
+
+You can install the released version of VCCP from [CRAN](https://CRAN.R-project.org) with:??
+
+``` r
+install.packages("VCCP")
+```
+
+And the development version from [GitHub](https://github.com/) with: 
+
+``` r
+# install.packages("devtools")
+devtools::install_github("xinxiong0238/VCCP")
+```
+## Example
+
+These are some basic examples which show you how to detect changes in the functional connectivity of multivariate time series using different binary segmentation methods 
+and inference tests.
+
+```{r example}
+library(VCCP)
+## basic example code
+data <- cbind(1:180, random.mvn.simulate.2.changes(180, 8, seed = 101))
+ T <- 180
+
+
+result.NV <- VCCP(data, method = "NBS", delta = 30, test = "V")
+GetTestPlot.Vuong(result.NV, T)
+title("VCCP: NBS + Vuong")
+
+result.NB <- VCCP(data, method = "NBS", delta = 30, test = "B")
+GetTestPlot.Boot(result.NB, T)
+title("VCCP: NBS + Stationary Bootstrap")
+
+result.OV <- VCCP(data, method = "OBS", delta = 30, test = "V")
+GetTestPlot.Vuong(result.OV, T)
+title("VCCP: OBS + Vuong")
+
+result.OB <- VCCP(data, method = "OBS", delta = 30, test = "B")
+GetTestPlot.Boot(result.OB, T)
+title("VCCP: OBS + Stationary Bootstrap")
+
+result.MV <- VCCP(data, method = "MOSUM", delta = 30, test = "V")
+GetTestPlot.Vuong(result.MV, T)
+title("VCCP: MOSUM + Vuong")
+
+result.MB <- VCCP(data, method = "MOSUM", delta = 30, test = "B")
+GetTestPlot.Boot(result.MB, T)
+title("VCCP: MOSUM + Stationary Bootstrap")
+
+result.WV <- VCCP(data, method = "WBS", delta = 30, test = "V")
+GetTestPlot.Vuong(result.WV, T)
+title("VCCP: WBS + Vuong")
+
+result.WB <- VCCP(data, method = "WBS", delta = 30, test = "B")
+GetTestPlot.Boot(result.WB, T)
+title("VCCP: WBS + Stationary Bootstrap")
+```
+

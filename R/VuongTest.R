@@ -88,7 +88,7 @@ Vuong_Multi_CDR_NewTestPoint <- function(t_point, t_start, t_end, X, delta, CDR,
 
 
 
-#' Test change points in connection network by the Vuong test
+#' Perform inference for change points in the functional connectivity by the Vuong test
 #'
 #' \code{TestPoints.Vuong} returns a dataframe containing the inference result
 #' of significant change points in the connection network among the multi/single-subject

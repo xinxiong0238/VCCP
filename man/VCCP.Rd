@@ -2,7 +2,7 @@
 % Please edit documentation in R/VCCP.R
 \name{VCCP}
 \alias{VCCP}
-\title{Find and test change points in connection network by VCCP model}
+\title{Find and test change points in the functional connectivity by VCCP model}
 \usage{
 VCCP(
   X_raw,
@@ -107,27 +107,42 @@ shorter than \code{delta}.
 \examples{
 data <- cbind(1:180, random.mvn.simulate.2.changes(180, 8, seed = 101))
 T <- 180
+
+
 result.NV <- VCCP(data, method = "NBS", delta = 30, test = "V")
 GetTestPlot.Vuong(result.NV, T)
 title("VCCP: NBS + Vuong")
+
+
 result.NB <- VCCP(data, method = "NBS", delta = 30, test = "B")
 GetTestPlot.Boot(result.NB, T)
 title("VCCP: NBS + Stationary Bootstrap")
+
 result.OV <- VCCP(data, method = "OBS", delta = 30, test = "V")
 GetTestPlot.Vuong(result.OV, T)
 title("VCCP: OBS + Vuong")
+
+
 result.OB <- VCCP(data, method = "OBS", delta = 30, test = "B")
 GetTestPlot.Boot(result.OB, T)
 title("VCCP: OBS + Stationary Bootstrap")
+
+
 result.MV <- VCCP(data, method = "MOSUM", delta = 30, test = "V")
 GetTestPlot.Vuong(result.MV, T)
 title("VCCP: MOSUM + Vuong")
+
+
 result.MB <- VCCP(data, method = "MOSUM", delta = 30, test = "B")
 GetTestPlot.Boot(result.MB, T)
 title("VCCP: MOSUM + Stationary Bootstrap")
+
+
 result.WV <- VCCP(data, method = "WBS", delta = 30, test = "V")
 GetTestPlot.Vuong(result.WV, T)
 title("VCCP: WBS + Vuong")
+
+
 result.WB <- VCCP(data, method = "WBS", delta = 30, test = "B")
 GetTestPlot.Boot(result.WB, T)
 title("VCCP: WBS + Stationary Bootstrap")

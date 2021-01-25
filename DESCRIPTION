@@ -1,5 +1,5 @@
 Package: VCCP
-Title: Detect non-linear change points with Vine Copula Change Point Model
+Title: Detect Change Points in the Functional Connectivity by Vine Copula Change Point Model
 Version: 0.0.0.9000
 Authors@R: 
     c(person(given = "Xin",
@@ -13,7 +13,7 @@ Authors@R:
            email = "cribben@ualberta.ca",
            comment = c(ORCID = "YOUR-ORCID-ID")))
 Description: Use Vine Copula Change Points (VCCP) model to estimate the number and location of multiple 
-    change points in th functional connectivity structure of multivariate 
+    change points in the functional connectivity structure of multivariate 
     time series. Possible binary segmentation methods of the VCCP model
     include NBS, OBS, MOSUM, and WBS. You can also check the 
     significance of detected candidates by Stationary Bootstrap or 

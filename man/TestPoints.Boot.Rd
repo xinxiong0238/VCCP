@@ -2,7 +2,7 @@
 % Please edit documentation in R/BootsTest.R
 \name{TestPoints.Boot}
 \alias{TestPoints.Boot}
-\title{Test change points in connection network by Stationary Bootstrap}
+\title{Perform inference for change points in the functional connectivity by Stationary Bootstrap}
 \usage{
 TestPoints.Boot(
   v_t_point,

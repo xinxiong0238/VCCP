@@ -2,7 +2,7 @@
 % Please edit documentation in R/VuongTest.R
 \name{TestPoints.Vuong}
 \alias{TestPoints.Vuong}
-\title{Test change points in connection network by the Vuong test}
+\title{Perform inference for change points in the functional connectivity by the Vuong test}
 \usage{
 TestPoints.Vuong(
   v_t_point,
