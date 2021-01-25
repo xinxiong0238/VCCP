@@ -117,9 +117,9 @@ VC_MOSUM_Boot <- function(X_raw, delta, G = 0.1, CDR = "D", trunc_tree = NA, fam
     return(matrix(0, 0, 5))
   } else {
     if (length(points0) == 1) {
-      tema_NRVBS <- TestPoints_Boot(
-        points0, X_raw, delta, CDR, trunc_tree, family_set, p, N,
-        pre_white, ar_num, sig_alpha
+      tema_NRVBS <- TestPoints.Boot(
+        points0, X_raw, delta, CDR, trunc_tree, family_set,
+        pre_white, ar_num, p, N, sig_alpha
       )
       return(tema_NRVBS)
     } else {
@@ -131,9 +131,9 @@ VC_MOSUM_Boot <- function(X_raw, delta, G = 0.1, CDR = "D", trunc_tree = NA, fam
         j <- j + 1
       }
       points_new <- unique(sort(points_new))
-      tema_NRVBS <- TestPoints_Boot(
-        points_new, X_raw, delta, CDR, trunc_tree, family_set, p, N,
-        pre_white, ar_num, sig_alpha
+      tema_NRVBS <- TestPoints.Boot(
+        points_new, X_raw, delta, CDR, trunc_tree, family_set,
+        pre_white, ar_num, p, N, sig_alpha
       )
 
       return(tema_NRVBS)

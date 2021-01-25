@@ -119,7 +119,7 @@ VC_MOSUM_Vuong <- function(X_raw, delta, G = 0.1, CDR = "D", trunc_tree = NA, fa
     return(matrix(0, 0, 4))
   } else {
     if (length(points0) == 1) {
-      tema_NRVBS <- TestPoints_Vuong(
+      tema_NRVBS <- TestPoints.Vuong(
         points0, X_raw, delta, CDR, trunc_tree, family_set,
         pre_white, ar_num, sig_alpha
       )
@@ -133,7 +133,7 @@ VC_MOSUM_Vuong <- function(X_raw, delta, G = 0.1, CDR = "D", trunc_tree = NA, fa
         j <- j + 1
       }
       points_new <- unique(sort(points_new))
-      tema_NRVBS <- TestPoints_Vuong(
+      tema_NRVBS <- TestPoints.Vuong(
         points_new, X_raw, delta, CDR, trunc_tree, family_set,
         pre_white, ar_num, sig_alpha
       )

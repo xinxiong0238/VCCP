@@ -10,7 +10,7 @@ MultiInd <- function(X, start, end) {
 
 #' Find changes in the correlation network by the VC+NBS method
 #'
-#' \code{VC_NBS_FindPoints} returns possible change points in the correlation network
+#' \code{VC.NBS.FindPoints} returns possible change points in the correlation network
 #'  among the time series data.
 #'
 #'  The time series data can come from one subject, or from multiple subjects.
@@ -48,20 +48,17 @@ MultiInd <- function(X, start, end) {
 #' autoregressive time series model to preprocess the raw data. If \code{pre_white}=0(default),
 #' no ar model is fitted. If \code{pre_white}=1, ar_num is the maximum order of model to fit.
 #'
-#' @return A two-element list. The first one contains a integer vector of
-#'  detected possible change points. The second one is the preprocessed time
-#'  series data (transforming data of each dimension to be univariately uniformly distributed
-#'  by \code{\link[VineCopula]{pobs}})
+#' @return An integer vector of detected possible change points.
 #' @export
 #' @examples
 #' data = cbind(1:180, random.mvn.simulate.2.changes(180,8,seed=101))
-#' result = VC_NBS_FindPoints(data, 30)
-#' @seealso  \code{\link{TestPoints_Boot}}, \code{\link{TestPoints_Vuong}}
+#' result = VC.NBS.FindPoints(data, 30)
+#' @seealso  \code{\link{TestPoints.Boot}}, \code{\link{TestPoints.Vuong}}, \code{\link{VCCP}}
 #'
 #' @importFrom VineCopula RVineStructureSelect
 #' @importFrom CDVine CDVineCopSelect
 #' @importFrom CDVine CDVineBIC
-VC_NBS_FindPoints <- function(X_raw, delta, CDR = "D", trunc_tree = NA, family_set = 1, pre_white = 0, ar_num = 1) {
+VC.NBS.FindPoints <- function(X_raw, delta, CDR = "D", trunc_tree = NA, family_set = 1, pre_white = 0, ar_num = 1) {
   T <- length(unique(X_raw[, 1]))
   subnum <- dim(X_raw)[1] / T
   cut_point0 <- c(1, T + 1)
@@ -164,6 +161,6 @@ VC_NBS_FindPoints <- function(X_raw, delta, CDR = "D", trunc_tree = NA, family_s
     }
     cut_point0 <- sort(c(cut_point0, cut_new_point))
   }
-  return(list(c(cut_point0[cut_point0 != cut_new_point & cut_point0 != T + 1 & cut_point0 != 1]), X))
+  return(c(cut_point0[cut_point0 != cut_new_point & cut_point0 != T + 1 & cut_point0 != 1]))
 }
 

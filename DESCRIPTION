@@ -1,15 +1,21 @@
 Package: VCCP
-Title: An Implementation of the Vine Copula Change Point Model
+Title: Detect non-linear change points with Vine Copula Change Point Model
 Version: 0.0.0.9000
 Authors@R: 
-    person(given = "Xin",
+    c(person(given = "Xin",
            family = "Xiong",
            role = c("aut", "cre"),
            email = "xiongxin0238@gmail.com",
-           comment = c(ORCID = "YOUR-ORCID-ID"))
-Description: Detect change points within time series data using the
-    Vine Copula Change Points (VCCP) model. Possible segmentation 
-    methods include NBS, OBS, MOSUM, and WBS. You can also check the 
+           comment = c(ORCID = "YOUR-ORCID-ID")),
+       person(given = "Ivor",
+           family = "Cribben",
+           role = c("aut"),
+           email = "cribben@ualberta.ca",
+           comment = c(ORCID = "YOUR-ORCID-ID")))
+Description: Use Vine Copula Change Points (VCCP) model to estimate the number and location of multiple 
+    change points in th functional connectivity structure of multivariate 
+    time series. Possible binary segmentation methods of the VCCP model
+    include NBS, OBS, MOSUM, and WBS. You can also check the 
     significance of detected candidates by Stationary Bootstrap or 
     Vuong test method.
 License: MIT + file LICENSE
@@ -26,3 +32,7 @@ Imports:
     mosum,
     mvtnorm
 Remotes: cran/CDVine
+Suggests: 
+    knitr,
+    rmarkdown
+VignetteBuilder: knitr

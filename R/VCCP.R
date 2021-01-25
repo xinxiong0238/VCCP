@@ -7,14 +7,17 @@
 #' and WBS. The inference method can be selected from the Stationary
 #' Bootstrap and the Vuong test.
 #'
-#' \code{VCCP} is a combined version of \code{\link{VC_NBS}}, \code{\link{VC_OBS}},
-#' \code{\link{VC_MOSUM}} and \code{\link{VC_WBS}}.
+#' If you choose \code{method='NBS'} and \code{test='B'} (or \code{test='V'}), it is a combination version of \code{\link{VC.NBS.FindPoints}},
+#' \code{\link{TestPoints.Boot}} (or \code{\link{TestPoints.Vuong}}).
+#' If you choose \code{method="WBS"}, note that for a large M(e.g., \code{M=50}), the WBS algorithm may only
+#' generate fewer sub-sampled time series if some pseudo slices have the length
+#' shorter than \code{delta}.
 #'
 #' @param X_raw A matrix with at least three columns. The first one must
 #'  be integers indicating time. If multiple subjects are included,
-#'  you shoud stack their data vertically with the corresponding
-#'  timestamps shown in the first column. The other two or more columns are
-#'  the multi-dimensional time series data (n*T times p).
+#'  you shoud vertically stack the data and identify timestamps of each subjects
+#'  in the first column. The other two or more columns are
+#'  the multi-dimensional time series data.
 #'
 #' @param method A string suggesting the binary segmentation method.
 #'  \code{method} can be equal to 'NBS' (default), 'OBS', 'MOSUM' and 'WBS'.
@@ -66,23 +69,47 @@
 #'
 #' @param sig_alpha A decimal between 0 and 1; significance level of the inference test.
 #'
-#' @return A dataframe. If you choose \code{test=="B"}, the dataframe contains 5 columns.
+#' @return A dataframe. If you choose \code{test="B"}, the dataframe contains 5 columns.
 #'  The first column contains possible change point candiates;
 #'  the second one corresponds to the reduced BIC values (left VC + right VC - all_VC);
 #'  the third and the fourth columns are the lower and upper bound of reduced BIC values calculated by the
 #'  Stationary Bootsrtap test; and the fifth one is the inference result.
 #'
-#'  If you choose \code{test=="V"}, the dataframe contains 4 columns.
+#'  If you choose \code{test="V"}, the dataframe contains 4 columns.
 #'  The first column contains possible change point candiates;
 #'  the second and the third one correspond to the P-values of the left and right Vuong tests
 #'  with Schwarz correction; and the fourth one is the inference result.
 #'
+#'
 #' @export
 #' @examples
-#'  data <- cbind(1:180, random.mvn.simulate.2.changes(180, 8, seed = 101))
-#'  result <- VCCP(data, method = "NBS", delta = 30, test = "V")
-#' @seealso  \code{\link{VC_NBS}}, \code{\link{VC_OBS}},
-#'  \code{\link{VC_MOSUM}},\code{\link{VC_WBS}}
+#' data <- cbind(1:180, random.mvn.simulate.2.changes(180, 8, seed = 101))
+#' T <- 180
+#' result.NV <- VCCP(data, method = "NBS", delta = 30, test = "V")
+#' GetTestPlot.Vuong(result.NV, T)
+#' title("VCCP: NBS + Vuong")
+#' result.NB <- VCCP(data, method = "NBS", delta = 30, test = "B")
+#' GetTestPlot.Boot(result.NB, T)
+#' title("VCCP: NBS + Stationary Bootstrap")
+#' result.OV <- VCCP(data, method = "OBS", delta = 30, test = "V")
+#' GetTestPlot.Vuong(result.OV, T)
+#' title("VCCP: OBS + Vuong")
+#' result.OB <- VCCP(data, method = "OBS", delta = 30, test = "B")
+#' GetTestPlot.Boot(result.OB, T)
+#' title("VCCP: OBS + Stationary Bootstrap")
+#' result.MV <- VCCP(data, method = "MOSUM", delta = 30, test = "V")
+#' GetTestPlot.Vuong(result.MV, T)
+#' title("VCCP: MOSUM + Vuong")
+#' result.MB <- VCCP(data, method = "MOSUM", delta = 30, test = "B")
+#' GetTestPlot.Boot(result.MB, T)
+#' title("VCCP: MOSUM + Stationary Bootstrap")
+#' result.WV <- VCCP(data, method = "WBS", delta = 30, test = "V")
+#' GetTestPlot.Vuong(result.WV, T)
+#' title("VCCP: WBS + Vuong")
+#' result.WB <- VCCP(data, method = "WBS", delta = 30, test = "B")
+#' GetTestPlot.Boot(result.WB, T)
+#' title("VCCP: WBS + Stationary Bootstrap")
+#' @seealso  \code{\link{GetTestPlot.Boot}}, \code{\link{GetTestPlot.Vuong}}
 VCCP <- function(X_raw, method = 'NBS', delta, G = 0.1, M = NA, test = "V", CDR = "D", trunc_tree = NA,
                    family_set = 1, pre_white = 0, ar_num = 1,
                    p = 0.3, N = 100, sig_alpha = 0.05) {
