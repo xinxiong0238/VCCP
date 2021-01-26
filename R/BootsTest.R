@@ -296,7 +296,7 @@ TestPoints.Boot <- function(v_t_point, X_raw, delta, CDR = "D", trunc_tree = NA,
 
 
 
-#' Plot inference result from VCCP(Stationary Bootstrap)
+#' Plot inference result from VCCP (Stationary Bootstrap)
 #'
 #' \code{GetTestPlot.Boot} plots the possible change points in the connection network
 #'  and their significance tested by the Stationary Bootstrap method.

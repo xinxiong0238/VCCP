@@ -1,131 +1,130 @@
 
-#' Find and test change points in the functional connectivity by VCCP model
+#' Multiple change point detection in the vine copula structure of multivariate time series
 #'
-#' \code{VCCP} returns a dataframe containing the inference result
-#' of significant change points in the connection network among the multi/single-subject
-#' time series data. Possible segmentation methods are NBS, OBS, MOSUM
-#' and WBS. The inference method can be selected from the Stationary
-#' Bootstrap and the Vuong test.
+#' \code{vccp.fun} detects multiple change points in the vine
+#' copula structure of a multivariate time series using
+#' vine copulas, various segmentation methods and a
+#' likelihood ratio test for inference.
 #'
-#' If you choose \code{method='NBS'} and \code{test='B'} (or \code{test='V'}), it is a combination version of \code{\link{VC.NBS.FindPoints}},
-#' \code{\link{TestPoints.Boot}} (or \code{\link{TestPoints.Vuong}}).
-#' If you choose \code{method="WBS"}, note that for a large M(e.g., \code{M=50}), the WBS algorithm may only
-#' generate fewer sub-sampled time series if some pseudo slices have the length
-#' shorter than \code{delta}.
+#' The time series X_t is of dimensionality p and we are
+#' looking for changes in the vine copula structure between
+#' the different time series components X_{t}^{(1)}, X_{t}^{(2)},
+#'  ..., X_{t}^{(p)}. We use vine copulas, various segmentation
+#'  methods and a likelihood ratio test for inference.
+#'  The function has been extensively tested on fMRI data.
 #'
-#' @param X_raw A matrix with at least three columns. The first one must
-#'  be integers indicating time. If multiple subjects are included,
-#'  you shoud vertically stack the data and identify timestamps of each subjects
-#'  in the first column. The other two or more columns are
-#'  the multi-dimensional time series data.
+#'  If you choose \code{method='NBS'} and \code{test='B'} (or \code{test='V'}), it is a combination version of \code{\link{VC.NBS.FindPoints}},
+#'  \code{\link{TestPoints.Boot}} (or \code{\link{TestPoints.Vuong}}).
+#'  If you choose \code{method="WBS"}, note that for a large M(e.g., \code{M=50}), the WBS algorithm may only
+#'  generate fewer sub-sampled time series if some pseudo slices have the length
+#'  shorter than \code{delta}.
 #'
-#' @param method A string suggesting the binary segmentation method.
-#'  \code{method} can be equal to 'NBS' (default), 'OBS', 'MOSUM' and 'WBS'.
+#' @param X A numerical matrix representing the multivariate
+#' time series, with the columns representing its components
+#' and rows representing time. If multiple subjects are included,
+#' vertically stack the subject data and identify timestamps
+#' of each subject in the first column.
 #'
-#' @param delta An integer indicating the least distance between two
-#'  change points. This parameter is vital for the VC_WBS method
-#'  and must be specified. Normally \code{delta >= 5*(dim(X_raw)[2]-1)} is recommended to ensure sufficient
-#'  data when fitting the VC model.
+#' @param method A character string, which defines the
+#'  segmentation method. If \code{method} = "NBS", which is the
+#'  default method, then the new binary segmentation is used.
+#'  Similarly, "OBS", "MOSUM" and "WBS" represent binary
+#'  segmentation, MOSUM and wild binary segmentation,
+#'  respectively.
 #'
-#' @param G An integer for the moving sum bandwidth in the MOSUM model when
-#' you choose \code{method}='MOSUM'. G should be less than \code{T/2}. Alternatively, a number between
-#'  0 and 0.5 describing the moving sum bandwidth relative to \code{T}
-#'  can be given. Default: \code{G=0.1}. This parameter greatly influences
-#'  the performance of the VC_MOSUM model.
+#' @param delta A positive integer number with default value equal to 30.
+#'  It is used to define the minimum distance acceptable between
+#'  detected change points. Normally delta >= 5*(dim(X)[2]-1)
+#'  is recommended to ensure sufficient data when estimating the
+#'  vine copula model.
 #'
-#' @param M An integer indicating the sub-sampling size in the WBS model when
-#' you choose \code{method}='WBS'. If not specified(i.e.,\code{M}=NA), it selects \code{floor(9*log(T))}
-#'  as the default level. A larger M can give rise to more candidates, but
-#'  will consume more time to fit the VC_WBS model.
+#' @param G A positive real number between 0 and 1 with default value equal to 0.1.
+#'  It is used to define the moving sum bandwidth relative to \code{T} in MOSUM when method = ”MOSUM” is chosen.
+#'  Alternatively, an positive integer less than \code{T/2} can be set to define the absolute bandwith.
 #'
-#' @param test An upper letter specifying the inference test type of the VCCP model:
-#'  "\code{V}" = Vuong test (default),
-#'  "\code{B}" = Stationary Bootstrap.
+#' @param A positive integer with default value floor(9*log(T).
+#'  It represents the number of sub-samples in WBS when
+#'  \code{method}="WBS" is chosen.
 #'
-#' @param CDR An upper letter specifying the tree type of the vine model:
-#'  "\code{D}" = D-Vine (default),
-#'  "\code{C}" = C-Vine,
-#'  "\code{R}" = R-Vine.
+#' @param test A character string, which defines the inference
+#'  method. If \code{test} = "V", which is the default method,
+#'  the Vuong test is performed. If \code{test} = "B", the
+#'  Stationary Bootstrap is performed.
 #'
-#' @param trunc_tree An integer or NA; level of truncation for the vine model.
-#'  If NA is specified (default), the vine contains \code{dim(X_raw)[2]-2} levels of trees.
+#' @param CDR A character string, which defines the type of Vine
+#'  Copula. If \code{CDR} = "D", which is the default method,
+#'  a D-vine is used. Similarly, if \code{CDR} = "C" or \code{CDR}
+#'  = "R", C-vine or R-vine copula is used.
 #'
-#' @param family_set An integer vector of pair-copula families to select from.
-#'  The vector has to include at least one pair-copula family that allows for
-#'  positive and one that allows for negative dependence.
-#'  If \code{familyset} = 1 (default), only Gauss copula is selected and VCCP can only
-#'  detect changes in the linear correlation network.
-#'  Coding of pair-copula families is the same as in \code{\link[VineCopula]{BiCop}}.
-
-#' @param p A decimal between 0 and 1; controlling the sampling block size in
-#'  Stationary Boostrap method (\code{rgeom(T,p)}) if you choose \code{test=="B"}. The larger p (default=0.3) is, the fewer time
-#'  points each bootstrap sample contains.
+#' @param trunc_tree A positive integer, which defines the level
+#'  of truncation for the vine copula. If \code{trunc_tree} = "NA",
+#'  which is the default value, the Vine contains \code{dim(X)[2]-2}
+#'  levels of trees.
 #'
-#' @param N An integer; specifying the number of Stationary Bootstrap samples (default=100) if you choose \code{test=="B"}.
+#' @param family_set A positive integer, which defines the bivariate copula
+#'  family. If \code{familyset} = 1, which is the default value, only the
+#'  Gauss copula is selected and VCCP detects change points in
+#'  the linear correlation network. Coding of pair-copula
+#'  families is the same as in \code{\link[VineCopula]{BiCop}}.
 #'
-#' @param pre_white,ar_num Integers helping fit (method: yule-walker) an
-#' autoregressive time series model to preprocess the raw data. If \code{pre_white}=0(default),
-#' no ar model is fitted. If \code{pre_white}=1, ar_num is the maximum order of model to fit.
+#' @param pre_white A positive integer, which defines whether
+#'  to pre-whiten the data. If \code{pre-white} = 0, which is the
+#'  default value, no pre-whitening is performed. If
+#'  \code{pre_white} =1, an autoregressive time series model
+#'  (method: yule-walker) is used to preprocess the raw data.
 #'
-#' @param sig_alpha A decimal between 0 and 1; significance level of the inference test.
+#' @param ar_num A positive integer, which defines the maximum
+#'  order of model to fit to preprocess the data (see \code{pre_white}).
+#'  If \code{ar_num} = 1, which is the default values, then an AR(1)
+#'  model is fit to the data.
 #'
-#' @return A dataframe. If you choose \code{test="B"}, the dataframe contains 5 columns.
+#' @param p A positive real number between 0 and 1 which is
+#'  defined to control the block size in Stationary Boostrap
+#'  method (\code{rgeom(T,p)}) if \code{test} = "B" is chosen.
+#'  If \code{p}=0.3, which is the default, each block resample
+#'  1/0.3 time points.
+#'
+#' @param N A positive integer, which defines the number
+#'  of Stationary Bootstrap resamples. The default value is \code{N=100}.
+#'
+#' @param sig_alpha positive real number between 0 and 1, which
+#'  defines the significance level of the inference test.
+#'  The default values is 0.05.
+#'
+#' @return A list with the following components:
+#'
+#' \itemize{
+#'  \item{"T"}{The total length of the time series data.}
+#'  \item{"change.points"}{The locations of the detected change points.}
+#'  \item{"no.of.cpts"}{The number of the detected change points.}
+#'  \item{"test.df"}{A dataframe containing the test result. If \code{test="B"}, the dataframe contains 5 columns.
 #'  The first column contains possible change point candiates;
 #'  the second one corresponds to the reduced BIC values (left VC + right VC - all_VC);
 #'  the third and the fourth columns are the lower and upper bound of reduced BIC values calculated by the
-#'  Stationary Bootsrtap test; and the fifth one is the inference result.
-#'
-#'  If you choose \code{test="V"}, the dataframe contains 4 columns.
+#'  Stationary Bootsrtap test; and the fifth one is the inference result. If \code{test="V"}, the dataframe contains 4 columns.
 #'  The first column contains possible change point candiates;
 #'  the second and the third one correspond to the P-values of the left and right Vuong tests
 #'  with Schwarz correction; and the fourth one is the inference result.
-#'
-#'
+#'  }
+#'  \item{"compute.time"}{Time (in minutes), to run \code{vccp.fun}.}
+#' }
 #' @export
 #' @examples
 #' data <- cbind(1:180, random.mvn.simulate.2.changes(180, 8, seed = 101))
 #' T <- 180
 #'
 #'
-#' result.NV <- VCCP(data, method = "NBS", delta = 30, test = "V")
+#' result.NV <- vccp.fun(data, method = "NBS", delta = 30, test = "V")
 #' GetTestPlot.Vuong(result.NV, T)
-#' title("VCCP: NBS + Vuong")
+#' title("vccp.fun: NBS + Vuong")
 #'
 #'
-#' result.NB <- VCCP(data, method = "NBS", delta = 30, test = "B")
+#' result.NB <- vccp.fun(data, method = "NBS", delta = 30, test = "B")
 #' GetTestPlot.Boot(result.NB, T)
-#' title("VCCP: NBS + Stationary Bootstrap")
+#' title("vccp.fun: NBS + Stationary Bootstrap")
 #'
-#' result.OV <- VCCP(data, method = "OBS", delta = 30, test = "V")
-#' GetTestPlot.Vuong(result.OV, T)
-#' title("VCCP: OBS + Vuong")
-#'
-#'
-#' result.OB <- VCCP(data, method = "OBS", delta = 30, test = "B")
-#' GetTestPlot.Boot(result.OB, T)
-#' title("VCCP: OBS + Stationary Bootstrap")
-#'
-#'
-#' result.MV <- VCCP(data, method = "MOSUM", delta = 30, test = "V")
-#' GetTestPlot.Vuong(result.MV, T)
-#' title("VCCP: MOSUM + Vuong")
-#'
-#'
-#' result.MB <- VCCP(data, method = "MOSUM", delta = 30, test = "B")
-#' GetTestPlot.Boot(result.MB, T)
-#' title("VCCP: MOSUM + Stationary Bootstrap")
-#'
-#'
-#' result.WV <- VCCP(data, method = "WBS", delta = 30, test = "V")
-#' GetTestPlot.Vuong(result.WV, T)
-#' title("VCCP: WBS + Vuong")
-#'
-#'
-#' result.WB <- VCCP(data, method = "WBS", delta = 30, test = "B")
-#' GetTestPlot.Boot(result.WB, T)
-#' title("VCCP: WBS + Stationary Bootstrap")
 #' @seealso  \code{\link{GetTestPlot.Boot}}, \code{\link{GetTestPlot.Vuong}}
-VCCP <- function(X_raw, method = 'NBS', delta, G = 0.1, M = NA, test = "V", CDR = "D", trunc_tree = NA,
+vccp.fun <- function(X, method = 'NBS', delta = 30, G = 0.1, M = NA, test = "V", CDR = "D", trunc_tree = NA,
                    family_set = 1, pre_white = 0, ar_num = 1,
                    p = 0.3, N = 100, sig_alpha = 0.05) {
   if (method != "NBS" & method != "OBS" & method != "MOSUM" & method != "WBS"){
@@ -137,16 +136,22 @@ VCCP <- function(X_raw, method = 'NBS', delta, G = 0.1, M = NA, test = "V", CDR 
       if (test != "V" & test != 'B') {
         return(cat("You can only specify test as 'B' or 'V'!"))
       } else {
+        re.list = list()
+        t = proc.time()
         result = switch (method,
-          "NBS" = VC_NBS(X_raw, delta, test, CDR, trunc_tree,
+          "NBS" = VC_NBS(X, delta, test, CDR, trunc_tree,
                          family_set, pre_white, ar_num, p, N, sig_alpha),
-          "OBS" = VC_OBS(X_raw, delta, test, CDR, trunc_tree,
+          "OBS" = VC_OBS(X, delta, test, CDR, trunc_tree,
                          family_set, pre_white, ar_num, p, N, sig_alpha),
-          "MOSUM" = VC_MOSUM(X_raw, delta, G, test, CDR, trunc_tree,
+          "MOSUM" = VC_MOSUM(X, delta, G, test, CDR, trunc_tree,
                          family_set, pre_white, ar_num, p, N, sig_alpha),
-          "WBS" = VC_WBS(X_raw, delta, M, test, CDR, trunc_tree,
+          "WBS" = VC_WBS(X, delta, M, test, CDR, trunc_tree,
                          family_set, pre_white, ar_num, p, N, sig_alpha))
-          return(result)
+        compute = (proc.time() - t)[3]/60
+        re.list = list("T"=length(unique(X[, 1])),"change.points"=result$t,
+                       "no.of.cpts" = length(result$t), "test.df" = result,
+                       "compute.time" = compute)
+          return(re.list)
       }
     }
   }
