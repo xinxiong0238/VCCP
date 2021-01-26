@@ -48,7 +48,7 @@ Alternatively, an positive integer less than \code{T/2} can be set to define the
 \item{test}{A character string, which defines the inference
 method. If \code{test} = "V", which is the default method,
 the Vuong test is performed. If \code{test} = "B", the
-stationary bootstrap is performed.}
+Stationary Bootstrap is performed.}
 
 \item{CDR}{A character string, which defines the type of Vine
 Copula. If \code{CDR} = "D", which is the default method,
@@ -86,18 +86,21 @@ If \code{p}=0.3, which is the default, each block resample
 \item{N}{A positive integer, which defines the number
 of Stationary Bootstrap resamples. The default value is \code{N=100}.}
 
-\item{A}{positive real number between 0 and 1, which
+\item{sig_alpha}{positive real number between 0 and 1, which
 defines the significance level of the inference test.
 The default values is 0.05.}
+
+\item{A}{positive integer with default value floor(9*log(T).
+It represents the number of sub-samples in WBS when
+\code{method}="WBS" is chosen.}
 }
 \value{
 A list with the following components:
 
 \itemize{
-\item{"T"}{The total length of the time series data.}
 \item{"change.points"}{The locations of the detected change points.}
 \item{"no.of.cpts"}{The number of the detected change points.}
-\item{"test"}{A dataframe containing the test result. If \code{test="B"}, the dataframe contains 5 columns.
+\item{"test.df"}{A dataframe containing the test result. If \code{test="B"}, the dataframe contains 5 columns.
 The first column contains possible change point candiates;
 the second one corresponds to the reduced BIC values (left VC + right VC - all_VC);
 the third and the fourth columns are the lower and upper bound of reduced BIC values calculated by the
@@ -107,13 +110,15 @@ the second and the third one correspond to the P-values of the left and right Vu
 with Schwarz correction; and the fourth one is the inference result.
 }
 \item{"compute.time"}{Time (in minutes), to run \code{vccp.fun}.}
+\item{"T"}{The total length of the time series data.}
+\item{"sig_alpha"}{The significance level of the inference test.}
 }
 }
 \description{
 \code{vccp.fun} detects multiple change points in the vine
 copula structure of a multivariate time series using
 vine copulas, various segmentation methods and a
-likelihood ratio test for inference.
+likelihood ratio or Stationary Boostrap test for inference.
 }
 \details{
 The time series X_t is of dimensionality p and we are
@@ -141,7 +146,7 @@ title("vccp.fun: NBS + Vuong")
 
 result.NB <- vccp.fun(data, method = "NBS", delta = 30, test = "B")
 GetTestPlot.Boot(result.NB, T)
-title("vccp.fun: NBS + stationary bootstrap")
+title("vccp.fun: NBS + Stationary Bootstrap")
 
 }
 \seealso{

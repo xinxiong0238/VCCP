@@ -1,10 +1,9 @@
-
 #' Multiple change point detection in the vine copula structure of multivariate time series
 #'
 #' \code{vccp.fun} detects multiple change points in the vine
 #' copula structure of a multivariate time series using
 #' vine copulas, various segmentation methods and a
-#' likelihood ratio test for inference.
+#' likelihood ratio or Stationary Boostrap test for inference.
 #'
 #' The time series X_t is of dimensionality p and we are
 #' looking for changes in the vine copula structure between
@@ -94,7 +93,6 @@
 #' @return A list with the following components:
 #'
 #' \itemize{
-#'  \item{"T"}{The total length of the time series data.}
 #'  \item{"change.points"}{The locations of the detected change points.}
 #'  \item{"no.of.cpts"}{The number of the detected change points.}
 #'  \item{"test.df"}{A dataframe containing the test result. If \code{test="B"}, the dataframe contains 5 columns.
@@ -107,6 +105,8 @@
 #'  with Schwarz correction; and the fourth one is the inference result.
 #'  }
 #'  \item{"compute.time"}{Time (in minutes), to run \code{vccp.fun}.}
+#'  \item{"T"}{The total length of the time series data.}
+#'  \item{"sig_alpha"}{The significance level of the inference test.}
 #' }
 #' @export
 #' @examples
@@ -148,9 +148,12 @@ vccp.fun <- function(X, method = 'NBS', delta = 30, G = 0.1, M = NA, test = "V",
           "WBS" = VC_WBS(X, delta, M, test, CDR, trunc_tree,
                          family_set, pre_white, ar_num, p, N, sig_alpha))
         compute = (proc.time() - t)[3]/60
-        re.list = list("T"=length(unique(X[, 1])),"change.points"=result$t,
-                       "no.of.cpts" = length(result$t), "test.df" = result,
-                       "compute.time" = compute)
+        re.list = list("change.points"=result$t,
+                       "no.of.cpts" = length(result$t),
+                       "test.df" = result,
+                       "compute.time" = compute,
+                       "T"=length(unique(X[, 1])),
+                       "sig_alpha"=sig_alpha)
           return(re.list)
       }
     }
