@@ -14,16 +14,16 @@
 #'
 #' result.2 = vccp.fun(data, "NBS", test = "B")
 #' getTestPlot(result.2)
-#' @seealso \code{\link{VCCP}}
+#' @seealso \code{\link{vccp.fun}}
 getTestPlot <- function(vccp_result){
   if(length(vccp_result)==0){
     return(cat("Inappropriate VCCP model specification!"))
   }else{
     if(dim(vccp_result$test.df)[2]==4){
-      GetTestPlot.Boot(vccp_result$test.df, vccp_result$T)
-    }else{
       GetTestPlot.Vuong(vccp_result$test.df, vccp_result$T,
                         vccp_result$sig_alpha)
+    }else{
+      GetTestPlot.Boot(vccp_result$test.df, vccp_result$T)
     }
   }
 }

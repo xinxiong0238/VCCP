@@ -23,5 +23,5 @@ result.2 = vccp.fun(data, "NBS", test = "B")
 getTestPlot(result.2)
 }
 \seealso{
-\code{\link{VCCP}}
+\code{\link{vccp.fun}}
 }

@@ -37,13 +37,17 @@ respectively.}
 
 \item{delta}{A positive integer number with default value equal to 30.
 It is used to define the minimum distance acceptable between
-detected change points. Normally delta >= 5*(dim(X)\link{2}-1)
+detected change points. Normally \code{delta} >= 5*(dim(X)\link{2}-1)
 is recommended to ensure sufficient data when estimating the
 vine copula model.}
 
 \item{G}{A positive real number between 0 and 1 with default value equal to 0.1.
 It is used to define the moving sum bandwidth relative to \code{T} in MOSUM when method = ”MOSUM” is chosen.
 Alternatively, an positive integer less than \code{T/2} can be set to define the absolute bandwith.}
+
+\item{M}{A positive integer with default value floor(9*log(T).
+It represents the number of sub-samples in WBS when
+\code{method}="WBS" is chosen.}
 
 \item{test}{A character string, which defines the inference
 method. If \code{test} = "V", which is the default method,
@@ -89,29 +93,25 @@ of Stationary Bootstrap resamples. The default value is \code{N=100}.}
 \item{sig_alpha}{positive real number between 0 and 1, which
 defines the significance level of the inference test.
 The default values is 0.05.}
-
-\item{A}{positive integer with default value floor(9*log(T).
-It represents the number of sub-samples in WBS when
-\code{method}="WBS" is chosen.}
 }
 \value{
 A list with the following components:
 
-\itemize{
-\item{"change.points"}{The locations of the detected change points.}
-\item{"no.of.cpts"}{The number of the detected change points.}
-\item{"test.df"}{A dataframe containing the test result. If \code{test="B"}, the dataframe contains 5 columns.
+\tabular{ll}{
+\code{change.points} \tab The locations of the detected change points. \cr
+\code{no.of.cpts} \tab The number of the detected change points. \cr
+\code{test.df} \tab A dataframe containing the test result. If \code{test="B"}, the dataframe contains 5 columns.
 The first column contains possible change point candiates;
-the second one corresponds to the reduced BIC values (left VC + right VC - all_VC);
+the second one corresponds to the reduced BIC values (left VC + right VC - all VC);
 the third and the fourth columns are the lower and upper bound of reduced BIC values calculated by the
 Stationary Bootsrtap test; and the fifth one is the inference result. If \code{test="V"}, the dataframe contains 4 columns.
 The first column contains possible change point candiates;
 the second and the third one correspond to the P-values of the left and right Vuong tests
 with Schwarz correction; and the fourth one is the inference result.
-}
-\item{"compute.time"}{Time (in minutes), to run \code{vccp.fun}.}
-\item{"T"}{The total length of the time series data.}
-\item{"sig_alpha"}{The significance level of the inference test.}
+\cr
+\code{compute.time} \tab Time (in minutes), to run \code{vccp.fun}. \cr
+\code{T} \tab The total length of the time series data. \cr
+\code{sig_alpha} \tab The significance level of the inference test. \cr
 }
 }
 \description{
@@ -121,34 +121,38 @@ vine copulas, various segmentation methods and a
 likelihood ratio or Stationary Boostrap test for inference.
 }
 \details{
-The time series X_t is of dimensionality p and we are
+The time series $X_t$ is of dimensionality p and we are
 looking for changes in the vine copula structure between
-the different time series components X_{t}^{(1)}, X_{t}^{(2)},
-..., X_{t}^{(p)}. We use vine copulas, various segmentation
+the different time series components $X_{t}^{(1)}$, $X_{t}^{(2)}$,
+..., $X_{t}^{(p)}$. We use vine copulas, various segmentation
 methods and a likelihood ratio test for inference.
 The function has been extensively tested on fMRI data.
-
-If you choose \code{method='NBS'} and \code{test='B'} (or \code{test='V'}), it is a combination version of \code{\link{VC.NBS.FindPoints}},
-\code{\link{TestPoints.Boot}} (or \code{\link{TestPoints.Vuong}}).
-If you choose \code{method="WBS"}, note that for a large M(e.g., \code{M=50}), the WBS algorithm may only
-generate fewer sub-sampled time series if some pseudo slices have the length
-shorter than \code{delta}.
 }
+\section{Author(s)}{
+
+Xin Xiong, Ivor Cribben (\email{cribben@ualberta.ca})
+}
+
+\section{References}{
+
+"Beyond linear dynamic functional connectivity: a vine copula change point model", Xiong and Cribben (2021), preprint.
+}
+
 \examples{
 data <- cbind(1:180, random.mvn.simulate.2.changes(180, 8, seed = 101))
 T <- 180
 
 
 result.NV <- vccp.fun(data, method = "NBS", delta = 30, test = "V")
-GetTestPlot.Vuong(result.NV, T)
-title("vccp.fun: NBS + Vuong")
+getTestPlot(result.NV)
+title("VCCP: NBS + Vuong")
 
 
 result.NB <- vccp.fun(data, method = "NBS", delta = 30, test = "B")
-GetTestPlot.Boot(result.NB, T)
-title("vccp.fun: NBS + Stationary Bootstrap")
+getTestPlot(result.NB)
+title("VCCP: NBS + Stationary Bootstrap")
 
 }
 \seealso{
-\code{\link{GetTestPlot.Boot}}, \code{\link{GetTestPlot.Vuong}}
+\code{\link{getTestPlot}}
 }
