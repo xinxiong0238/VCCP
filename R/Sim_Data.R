@@ -4,17 +4,16 @@
 #'  data with 2 change points in the connection network. This function
 #'  aims to display how VCCP model detects change points in examples.
 #'
-#' @param nobs An integer; equal to the length of the time series data (T).
+#' @param nobs A positive integer number equal to the length of the time series data (T).
 #'  \code{nobs} must be multiple times of 3 since change points occur at T/3
 #'  and 2T/3.
 #'
-#' @param n.ser An integer indicating the number of variables in the
+#' @param n.ser A positive integer number indicating the dimensionality of the
 #'  time series. \code{n.ser} must be larger than 8 as \code{random.mvn.simulate.2.changes}
-#'  generates 3 different networks on at most 8 connected nodes. If n.ser>8,
-#'  nodes on columns other than the first 8 are supposed to be independent from
-#'  other nodes all the time.
+#'  generates 3 different networks among 8 connected nodes. Other variables are generated
+#'  to be independent of the 8 nodes all the time.
 #'
-#' @param seed An integer; set for the purpose of reproducibility study.
+#' @param seed A positive integer number that ensures reproducibility.
 #'
 #'
 #' @return A \code{nobs} times \code{n.ser} matrix with 2 change points

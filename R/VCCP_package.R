@@ -1,12 +1,12 @@
 #' VCCP: Detect change points in the functional connectivity by Vine Copula Change Point Model
 #'
-#' The VCCP package use Vine Copula Change Points (VCCP) model to estimate the number and location of multiple
+#' The VCCP package uses Vine Copula Change Points (VCCP) model to estimate the number and location of multiple
 #' change points in the functional connectivity structure of multivariate
 #' time series. Possible binary segmentation methods of the VCCP model
 #' include NBS, OBS, MOSUM, and WBS. You can also check the
 #' significance of detected candidates by Stationary Bootstrap or
-#' Vuong test method.This package provides one main function
-#' to implement the VCCP model with two auxilary functions to
+#' Vuong test method. This package provides one main function
+#' to implement the VCCP model with two auxiliary functions to
 #' generate multivariate normal data with 2 change points
 #' and plot the result.
 #'

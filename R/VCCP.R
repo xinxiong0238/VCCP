@@ -90,11 +90,11 @@
 #'  \code{change.points} \tab The locations of the detected change points. \cr
 #'  \code{no.of.cpts} \tab The number of the detected change points. \cr
 #'  \code{test.df} \tab A dataframe containing the test result. If \code{test="B"}, the dataframe contains 5 columns.
-#'  The first column contains possible change point candiates;
+#'  The first column contains possible change point candidates;
 #'  the second one corresponds to the reduced BIC values (left VC + right VC - all VC);
 #'  the third and the fourth columns are the lower and upper bound of reduced BIC values calculated by the
 #'  Stationary Bootsrtap test; and the fifth one is the inference result. If \code{test="V"}, the dataframe contains 4 columns.
-#'  The first column contains possible change point candiates;
+#'  The first column contains possible change point candidates;
 #'  the second and the third one correspond to the P-values of the left and right Vuong tests
 #'  with Schwarz correction; and the fourth one is the inference result.
 #'  \cr
