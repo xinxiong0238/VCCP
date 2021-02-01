@@ -27,7 +27,7 @@
 #'
 #' @param delta A positive integer number with default value equal to 30.
 #'  It is used to define the minimum distance acceptable between
-#'  detected change points. Normally \code{delta} >= 5*(dim(X)[2]-1)
+#'  detected change points. Normally \code{delta} >= 5*ncol(X))
 #'  is recommended to ensure sufficient data when estimating the
 #'  vine copula model.
 #'
