@@ -1,5 +1,5 @@
-Package: VCCP
-Title: Detect Change Points in the Functional Connectivity by Vine Copula Change Point Model
+Package: vccp
+Title: Vine Copula Change Point beyond linear dependence
 Version: 0.0.0.9000
 Authors@R: 
     c(person(given = "Xin",
@@ -12,12 +12,18 @@ Authors@R:
            role = c("aut"),
            email = "cribben@ualberta.ca",
            comment = c(ORCID = "YOUR-ORCID-ID")))
-Description: Use Vine Copula Change Points (VCCP) model to estimate the number and location of multiple 
-    change points in the functional connectivity structure of multivariate 
-    time series. Possible binary segmentation methods of the VCCP model
-    include NBS, OBS, MOSUM, and WBS. You can also check the 
-    significance of detected candidates by Stationary Bootstrap or 
-    Vuong test method.
+Author: Xin Xiong [aut, cre],
+  Ivor Cribben [aut],
+Maintainer: Xin Xiong <xiongxin0238@gmail.com>
+Description: The vccp package implements the Vine Copula Change Point (VCCP)
+    methodology for the estimation of the number and location of multiple
+    change points in the network structure of multivariate time series. The
+    method uses vine copulas and adapted binary segmentation algorithm to 
+    identify multiple change points and a likelihood ratio test for inference.
+    The vine copulas allow for various forms of dependence between time series
+    including tail, symmetric and asymmetric dependence. The functions have been
+    extensively tested on simulated multivariate time series data and fMRI data.
+    For details on the VCCP methodology, please see Xiong & Cribben (2021).
 License: MIT + file LICENSE
 Encoding: UTF-8
 LazyData: true
@@ -35,4 +41,4 @@ Remotes: cran/CDVine
 Suggests: 
     knitr,
     rmarkdown
-VignetteBuilder: knitr
+

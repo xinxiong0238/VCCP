@@ -1,19 +1,19 @@
 #' VCCP: Detect change points in the functional connectivity by Vine Copula Change Point Model
 #'
-#' The VCCP package uses Vine Copula Change Points (VCCP) model to estimate the number and location of multiple
-#' change points in the functional connectivity structure of multivariate
-#' time series. Possible binary segmentation methods of the VCCP model
-#' include NBS, OBS, MOSUM, and WBS. You can also check the
-#' significance of detected candidates by Stationary Bootstrap or
-#' Vuong test method. This package provides one main function
-#' to implement the VCCP model with two auxiliary functions to
-#' generate multivariate normal data with 2 change points
-#' and plot the result.
+#' The vccp package implements the Vine Copula Change Point (VCCP)
+#' methodology for the estimation of the number and location of multiple
+#' change points in the network structure of multivariate time series.
+#' The method uses vine copulas and adapted binary segmentation algorithm to
+#' identify multiple change points and a likelihood ratio test for inference.
+#' The vine copulas allow for various forms of dependence between time series
+#' including tail, symmetric and asymmetric dependence. The functions have been
+#' extensively tested on simulated multivariate time series data and fMRI data.
+#' For details on the VCCP methodology, please see Xiong & Cribben (2021).
 #'
-#' @section VCCCP functions:
-#' \link{random.mvn.simulate.2.changes}, \link{getTestPlot} and \link{vccp.fun}
+#' @section VCCP functions:
+#' \link{mvn.sim.2.cps}, \link{getTestPlot} and \link{vccp.fun}
 #' @examples
-#' # See examples for the function ``vccp.fun''.
+#' # See examples in the function ``vccp.fun''.
 #'
 #' @section Author(s):
 #'  Xin Xiong, Ivor Cribben (\email{cribben@@ualberta.ca})

@@ -1,28 +1,28 @@
-#' Simulate MVN data with 2 change points
+#' Simulate multivariate normal data with 2 change points
 #'
-#' \code{random.mvn.simulate.2.changes} returns a multivariate normal
-#'  data with 2 change points in the connection network. This function
-#'  aims to display how VCCP model detects change points in examples.
+#'  This function simulates a multivariate normal data set with 2
+#'  change points in the network structure.
 #'
-#' @param nobs A positive integer number equal to the length of the time series data (T).
-#'  \code{nobs} must be multiple times of 3 since change points occur at T/3
+#' @param nobs A positive integer, which defines the length of the time series.
+#'  It must be multiple of 3 since change points occur at time points T/3
 #'  and 2T/3.
 #'
-#' @param n.ser A positive integer number indicating the dimensionality of the
-#'  time series. \code{n.ser} must be larger than 8 as \code{random.mvn.simulate.2.changes}
+#' @param n_ser A positive integer number indicating the dimensionality of the
+#'  time series. \code{n_ser} must be larger than 8 as \code{random.mvn.simulate.2.changes}
 #'  generates 3 different networks among 8 connected nodes. Other variables are generated
 #'  to be independent of the 8 nodes all the time.
 #'
-#' @param seed A positive integer number that ensures reproducibility.
+#' @param seed A positive integer with default value equal to 101.
+#' It is used to ensure reproducibility.
 #'
 #'
-#' @return A \code{nobs} times \code{n.ser} matrix with 2 change points
-#' at t=\code{nobs/3+1} and t=\code{nobs*2/3+1} in the network structure.
+#' @return A \code{nobs} * \code{n_ser} matrix with 2 change points
+#' at time points \code{nobs/3+1} and \code{nobs*2/3+1}.
 #'
 #' @export
 #' @examples
-#' mvn <- random.mvn.simulate.2.changes(180, 8, seed = 101)
-random.mvn.simulate.2.changes <- function(nobs, n.ser, seed) {
+#' data <- mvn.sim.2.cps(180, 8, seed = 101)
+mvn.sim.2.cps <- function(nobs, n_ser, seed = 101) {
   data <- c()
   nobs <- nobs / 3
 
@@ -69,7 +69,7 @@ random.mvn.simulate.2.changes <- function(nobs, n.ser, seed) {
   data.2 <- mvtnorm::rmvnorm(nobs + burn_in, sigma = sigma.2)
   data.2 <- data.2[(burn_in + 1):(nobs + burn_in), ]
 
-  t <- n.ser # number of noise series
+  t <- n_ser # number of noise series
   data_1_used <- c()
   for (i in 1:t) {
     set.seed(nobs * 1 + 2 * i * 10001 + i + seed)
@@ -97,7 +97,7 @@ random.mvn.simulate.2.changes <- function(nobs, n.ser, seed) {
   data.1 <- data.1[(burn_in + 1):(nobs + burn_in), ]
 
 
-  t <- n.ser # number of noise series
+  t <- n_ser # number of noise series
   data_2_used <- c()
   for (i in 1:t) {
     set.seed(nobs * seed + 5 * i * 10001 + i)
@@ -128,7 +128,7 @@ random.mvn.simulate.2.changes <- function(nobs, n.ser, seed) {
   data.2 <- mvtnorm::rmvnorm(nobs + burn_in, sigma = array(c(1, -.8, -.8, 1), c(2, 2)))
   data.2 <- data.2[(burn_in + 1):(nobs + burn_in), ]
 
-  t <- n.ser # number of noise series
+  t <- n_ser # number of noise series
   data_3_used <- c()
   for (i in 1:t) {
     set.seed(nobs * seed + 10 * i * 10001 + i)

@@ -1,53 +1,53 @@
 #' Multiple change point detection in the vine copula structure of multivariate time series
 #'
-#' \code{vccp.fun} detects multiple change points in the vine
+#' This function detects multiple change points in the vine
 #' copula structure of a multivariate time series using
-#' vine copulas, various segmentation methods and a
-#' likelihood ratio or Stationary Boostrap test for inference.
+#' vine copulas, an adapted binary segmentation algorithm and a
+#' likelihood ratio test for inference. Other segmentation methods
+#' are also available as well as the stationary bootstrap for inference.
 #'
-#' The time series $X_t$ is of dimensionality p and we are
+#' The time series \code{X_t} is of dimensionality p and we are
 #' looking for changes in the vine copula structure between
-#' the different time series components $X_{t}^{(1)}$, $X_{t}^{(2)}$,
-#'  ..., $X_{t}^{(p)}$. We use vine copulas, various segmentation
-#'  methods and a likelihood ratio test for inference.
-#'  The function has been extensively tested on fMRI data.
+#' the different time series components \code{X_{t}^{(1)}, X_{t}^{(2)},
+#'  ..., X_{t}^{(p)}}. VCCP uses vine copulas, an adapted binary segmentation
+#'  algorithm and a likelihood ratio test for inference. Other segmentation
+#'  methods are also available as well as the stationary bootstrap for inference.
 #'
 #' @param X A numerical matrix representing the multivariate
-#' time series, with the columns representing its components
-#' and rows representing time. If multiple subjects are included,
-#' vertically stack the subject data and identify timestamps
-#' of each subject in the first column.
+#' time series, with the columns representing its components.
+#' If multiple subjects are included (panel data), vertically
+#' stack the subject data and identify timestamps of each subject in the first column.
 #'
 #' @param method A character string, which defines the
 #'  segmentation method. If \code{method} = "NBS", which is the
-#'  default method, then the new binary segmentation is used.
-#'  Similarly, "OBS", "MOSUM" and "WBS" represent binary
-#'  segmentation, MOSUM and wild binary segmentation,
-#'  respectively.
+#'  default method, then the adapted new binary segmentation is used.
+#'  Similarly, if \code{method}="OBS", "MOSUM" or "WBS", then binary
+#'  segmentation, MOSUM and wild binary segmentation are used, respectively.
 #'
 #' @param delta A positive integer number with default value equal to 30.
 #'  It is used to define the minimum distance acceptable between
-#'  detected change points. Normally \code{delta} >= 5*ncol(X))
+#'  detected change points. In general, \code{delta} >= 5*ncol(X))
 #'  is recommended to ensure sufficient data when estimating the
 #'  vine copula model.
 #'
 #' @param G A positive real number between 0 and 1 with default value equal to 0.1.
-#'  It is used to define the moving sum bandwidth relative to \code{T} in MOSUM when method = ”MOSUM” is chosen.
-#'  Alternatively, an positive integer less than \code{T/2} can be set to define the absolute bandwith.
+#'  It is used to define the moving sum bandwidth relative to \code{T} in MOSUM when
+#'  \code{method} = "MOSUM" is chosen. Alternatively, positive integer
+#'  less than half of the time series length can be set to define the absolute bandwith.
 #'
-#' @param M A positive integer with default value floor(9*log(T).
+#' @param M A positive integer with default value equal to floor(9*log(T) (T is the length of the time series).
 #'  It represents the number of sub-samples in WBS when
 #'  \code{method}="WBS" is chosen.
 #'
 #' @param test A character string, which defines the inference
-#'  method. If \code{test} = "V", which is the default method,
+#'  method used. If \code{test} = "V", which is the default method,
 #'  the Vuong test is performed. If \code{test} = "B", the
-#'  Stationary Bootstrap is performed.
+#'  stationary bootstrap is performed.
 #'
-#' @param CDR A character string, which defines the type of Vine
-#'  Copula. If \code{CDR} = "D", which is the default method,
+#' @param CDR A character string, which defines the type of vine
+#'  copula used. If \code{CDR} = "D", which is the default method,
 #'  a D-vine is used. Similarly, if \code{CDR} = "C" or \code{CDR}
-#'  = "R", C-vine or R-vine copula is used.
+#'  = "R", a C-vine or an R-vine copula is used, respectively.
 #'
 #' @param trunc_tree A positive integer, which defines the level
 #'  of truncation for the vine copula. If \code{trunc_tree} = "NA",
@@ -61,7 +61,7 @@
 #'  families is the same as in \code{\link[VineCopula]{BiCop}}.
 #'
 #' @param pre_white A positive integer, which defines whether
-#'  to pre-whiten the data. If \code{pre-white} = 0, which is the
+#'  the data is pre-whitened. If \code{pre-white} = 0, which is the
 #'  default value, no pre-whitening is performed. If
 #'  \code{pre_white} =1, an autoregressive time series model
 #'  (method: yule-walker) is used to preprocess the raw data.
@@ -72,15 +72,15 @@
 #'  model is fit to the data.
 #'
 #' @param p A positive real number between 0 and 1 which is
-#'  defined to control the block size in Stationary Boostrap
+#'  defined to control the block size in the stationary boostrap
 #'  method (\code{rgeom(T,p)}) if \code{test} = "B" is chosen.
-#'  If \code{p}=0.3, which is the default, each block resample
-#'  1/0.3 time points.
+#'  If \code{p}=0.3, which is the default, each resampled block
+#'  has 1/0.3 time points on average.
 #'
 #' @param N A positive integer, which defines the number
-#'  of Stationary Bootstrap resamples. The default value is \code{N=100}.
+#'  of the stationary bootstrap resamples used. The default value is \code{N=100}.
 #'
-#' @param sig_alpha positive real number between 0 and 1, which
+#' @param sig_alpha A positive real number between 0 and 1, which
 #'  defines the significance level of the inference test.
 #'  The default values is 0.05.
 #'
@@ -88,34 +88,29 @@
 #'
 #' \tabular{ll}{
 #'  \code{change.points} \tab The locations of the detected change points. \cr
-#'  \code{no.of.cpts} \tab The number of the detected change points. \cr
-#'  \code{test.df} \tab A dataframe containing the test result. If \code{test="B"}, the dataframe contains 5 columns.
-#'  The first column contains possible change point candidates;
-#'  the second one corresponds to the reduced BIC values (left VC + right VC - all VC);
-#'  the third and the fourth columns are the lower and upper bound of reduced BIC values calculated by the
-#'  Stationary Bootsrtap test; and the fifth one is the inference result. If \code{test="V"}, the dataframe contains 4 columns.
-#'  The first column contains possible change point candidates;
-#'  the second and the third one correspond to the P-values of the left and right Vuong tests
-#'  with Schwarz correction; and the fourth one is the inference result.
-#'  \cr
+#'  \code{no.of.cpts} \tab The number of detected change points. \cr
+#'  \code{test.df} \tab A dataframe containing the test result.  \cr
 #'  \code{compute.time} \tab Time (in minutes), to run \code{vccp.fun}. \cr
-#'  \code{T} \tab The total length of the time series data. \cr
-#'  \code{sig_alpha} \tab The significance level of the inference test. \cr
+#'  \code{T} \tab The length of the time series data. \cr
+#'  \code{sig_alpha} \tab The significance level for the inference test. \cr
 #' }
 #'
 #'
 #' @export
 #' @examples
-#' data <- cbind(1:180, random.mvn.simulate.2.changes(180, 8, seed = 101))
+#' ## Simulate MVN data with 2 change points
+#' data <- cbind(1:180, mvn.sim.2.cps(180, 8, seed = 101))
 #' T <- 180
 #'
-#'
+#' ## Change point detection using VCCP
 #' result.NV <- vccp.fun(data, method = "NBS", delta = 30, test = "V")
+#' ## Plot the results
 #' getTestPlot(result.NV)
 #' title("VCCP: NBS + Vuong")
 #'
-#'
+#' ## Change point detection using NBS and stationary bootstrap for inference
 #' result.NB <- vccp.fun(data, method = "NBS", delta = 30, test = "B")
+#' ## Plot the results
 #' getTestPlot(result.NB)
 #' title("VCCP: NBS + Stationary Bootstrap")
 #'
