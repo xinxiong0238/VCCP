@@ -8,13 +8,13 @@ mvn.sim.2.cps(nobs, n_ser, seed = 101)
 }
 \arguments{
 \item{nobs}{A positive integer, which defines the length of the time series.
-It must be multiple of 3 since change points occur at time points T/3
+It must be a multiple of 3 since change points occur at time points T/3
 and 2T/3.}
 
 \item{n_ser}{A positive integer number indicating the dimensionality of the
-time series. \code{n_ser} must be larger than 8 as \code{random.mvn.simulate.2.changes}
-generates 3 different networks among 8 connected nodes. Other variables are generated
-to be independent of the 8 nodes all the time.}
+time series. \code{n_ser} must be equal to or larger than 8 as \code{mvn.sim.2.cps}
+generates 3 different network structures among 8 connected nodes. The remaining
+variables are generated as independent data.}
 
 \item{seed}{A positive integer with default value equal to 101.
 It is used to ensure reproducibility.}
@@ -28,5 +28,6 @@ This function simulates a multivariate normal data set with 2
 change points in the network structure.
 }
 \examples{
+## Simulate MVN data with 2 change points
 data <- mvn.sim.2.cps(180, 8, seed = 101)
 }

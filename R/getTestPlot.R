@@ -1,7 +1,6 @@
-#' Plot result from the VCCP model
+#' Plot output from the VCCP model
 #'
-#'  This function plots change points in the functional connectivity
-#'  network structure between multivariate time series detected by the VCCP model.
+#'  This function plots the change points in the network structure between multivariate time series detected by the VCCP model.
 #'
 #' @param vccp_result A list generated from \code{\link{vccp.fun}}.
 #'
@@ -23,11 +22,11 @@ getTestPlot <- function(vccp_result){
   if(length(vccp_result)==0){
     return(cat("Inappropriate VCCP model specification!"))
   }else{
-    if(dim(vccp_result$test.df)[2]==4){
-      GetTestPlot.Vuong(vccp_result$test.df, vccp_result$T,
+    if(dim(vccp_result$test_df)[2]==4){
+      GetTestPlot.Vuong(vccp_result$test_df, vccp_result$T,
                         vccp_result$sig_alpha)
     }else{
-      GetTestPlot.Boot(vccp_result$test.df, vccp_result$T)
+      GetTestPlot.Boot(vccp_result$test_df, vccp_result$T)
     }
   }
 }

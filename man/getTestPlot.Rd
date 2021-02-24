@@ -2,7 +2,7 @@
 % Please edit documentation in R/getTestPlot.R
 \name{getTestPlot}
 \alias{getTestPlot}
-\title{Plot result from the VCCP model}
+\title{Plot output from the VCCP model}
 \usage{
 getTestPlot(vccp_result)
 }
@@ -10,8 +10,7 @@ getTestPlot(vccp_result)
 \item{vccp_result}{A list generated from \code{\link{vccp.fun}}.}
 }
 \description{
-This function plots change points in the functional connectivity
-network structure between multivariate time series detected by the VCCP model.
+This function plots the change points in the network structure between multivariate time series detected by the VCCP model.
 }
 \examples{
 ## Simulate MVN data with 2 change points

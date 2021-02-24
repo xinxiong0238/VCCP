@@ -35,16 +35,16 @@ segmentation, MOSUM and wild binary segmentation are used, respectively.}
 
 \item{delta}{A positive integer number with default value equal to 30.
 It is used to define the minimum distance acceptable between
-detected change points. In general, \code{delta} >= 5*ncol(X))
+change points. In general, \code{delta} >= 5*ncol(X))
 is recommended to ensure sufficient data when estimating the
 vine copula model.}
 
 \item{G}{A positive real number between 0 and 1 with default value equal to 0.1.
 It is used to define the moving sum bandwidth relative to \code{T} in MOSUM when
-\code{method} = "MOSUM" is chosen. Alternatively, positive integer
+\code{method} = "MOSUM" is chosen. Alternatively, a positive integer
 less than half of the time series length can be set to define the absolute bandwith.}
 
-\item{M}{A positive integer with default value equal to floor(9*log(T) (T is the length of the time series).
+\item{M}{A positive integer with default value equal to floor(9*log(T)) (T is the length of the time series).
 It represents the number of sub-samples in WBS when
 \code{method}="WBS" is chosen.}
 
@@ -53,10 +53,10 @@ method used. If \code{test} = "V", which is the default method,
 the Vuong test is performed. If \code{test} = "B", the
 stationary bootstrap is performed.}
 
-\item{CDR}{A character string, which defines the type of vine
-copula used. If \code{CDR} = "D", which is the default method,
+\item{CDR}{A character string, which defines the vine structure.
+If \code{CDR} = "D", which is the default method,
 a D-vine is used. Similarly, if \code{CDR} = "C" or \code{CDR}
-= "R", a C-vine or an R-vine copula is used, respectively.}
+= "R", a C-vine or an R-vine is used, respectively.}
 
 \item{trunc_tree}{A positive integer, which defines the level
 of truncation for the vine copula. If \code{trunc_tree} = "NA",
@@ -66,7 +66,7 @@ levels of trees.}
 \item{family_set}{A positive integer, which defines the bivariate copula
 family. If \code{familyset} = 1, which is the default value, only the
 Gauss copula is selected and VCCP detects change points in
-the linear correlation network. Coding of pair-copula
+the linear correlation graph. Coding of pair-copula
 families is the same as in \code{\link[VineCopula]{BiCop}}.}
 
 \item{pre_white}{A positive integer, which defines whether
@@ -77,13 +77,13 @@ default value, no pre-whitening is performed. If
 
 \item{ar_num}{A positive integer, which defines the maximum
 order of model to fit to preprocess the data (see \code{pre_white}).
-If \code{ar_num} = 1, which is the default values, then an AR(1)
+If \code{ar_num} = 1, which is the default value, then an AR(1)
 model is fit to the data.}
 
 \item{p}{A positive real number between 0 and 1 which is
-defined to control the block size in the stationary boostrap
+defined as the block size in the stationary boostrap
 method (\code{rgeom(T,p)}) if \code{test} = "B" is chosen.
-If \code{p}=0.3, which is the default, each resampled block
+If \code{p}=0.3, which is the default value, each resampled block
 has 1/0.3 time points on average.}
 
 \item{N}{A positive integer, which defines the number
@@ -97,10 +97,10 @@ The default values is 0.05.}
 A list with the following components:
 
 \tabular{ll}{
-\code{change.points} \tab The locations of the detected change points. \cr
-\code{no.of.cpts} \tab The number of detected change points. \cr
-\code{test.df} \tab A dataframe containing the test result.  \cr
-\code{compute.time} \tab Time (in minutes), to run \code{vccp.fun}. \cr
+\code{loc_of_cpts} \tab The locations of the detected change points. \cr
+\code{no_of_cpts} \tab The number of detected change points. \cr
+\code{test_df} \tab A dataframe containing the test result.  \cr
+\code{compute_time} \tab Time (in minutes), to run \code{vccp.fun}. \cr
 \code{T} \tab The length of the time series data. \cr
 \code{sig_alpha} \tab The significance level for the inference test. \cr
 }
@@ -108,7 +108,7 @@ A list with the following components:
 \description{
 This function detects multiple change points in the vine
 copula structure of a multivariate time series using
-vine copulas, an adapted binary segmentation algorithm and a
+vine copulas, an adapted binary segmentation algorithm, and a
 likelihood ratio test for inference. Other segmentation methods
 are also available as well as the stationary bootstrap for inference.
 }
@@ -117,7 +117,7 @@ The time series \code{X_t} is of dimensionality p and we are
 looking for changes in the vine copula structure between
 the different time series components \code{X_{t}^{(1)}, X_{t}^{(2)},
  ..., X_{t}^{(p)}}. VCCP uses vine copulas, an adapted binary segmentation
-algorithm and a likelihood ratio test for inference. Other segmentation
+algorithm, and a likelihood ratio test for inference. Other segmentation
 methods are also available as well as the stationary bootstrap for inference.
 }
 \section{Author(s)}{
