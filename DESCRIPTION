@@ -1,20 +1,18 @@
 Package: vccp
-Title: Vine copula change point detection in multivariate time series
+Title: Vine Copula Change Point Detection in Multivariate Time Series
 Version: 0.1.0
 Authors@R: 
     c(person(given = "Xin",
            family = "Xiong",
            role = c("aut", "cre"),
-           email = "xinxiong@hsph.harvard.edu",
-           comment = c(ORCID = "YOUR-ORCID-ID")),
+           email = "xinxiong@hsph.harvard.edu"),
        person(given = "Ivor",
            family = "Cribben",
            role = c("aut"),
-           email = "cribben@ualberta.ca",
-           comment = c(ORCID = "YOUR-ORCID-ID")))
+           email = "cribben@ualberta.ca"))
 Author: Xin Xiong [aut, cre],
-  Ivor Cribben [aut],
-Maintainer: Xin Xiong <xiongxin0238@gmail.com>
+  Ivor Cribben [aut]
+Maintainer: Xin Xiong <xinxiong@hsph.harvard.edu>
 Description: Implements the Vine Copula Change Point (VCCP) methodology for the estimation of the number and location of multiple change points in the vine copula structure of multivariate time series. The method uses vine copulas, an adapted binary segmentation algorithm to identify multiple change points, and a likelihood ratio test for inference. The vine copulas allow for various forms of dependence between time series including tail, symmetric and asymmetric dependence. The functions have been extensively tested on simulated multivariate time series data and fMRI data. For details on the VCCP methodology, please see Xiong & Cribben (2021).
 License: MIT + file LICENSE
 Encoding: UTF-8
