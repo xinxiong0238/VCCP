@@ -24,5 +24,6 @@
 NULL
 #> NULL
 #' @importFrom VineCopula RVineStructureSelect
-#' @importFrom CDVine CDVineCopSelect
-#' @importFrom CDVine CDVineBIC
+#' @importFrom VineCopula D2RVine
+#' @importFrom VineCopula RVineCopSelect
+#' @importFrom VineCopula RVineVuongTest

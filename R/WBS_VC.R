@@ -28,12 +28,16 @@ MultiGenRandomInterval <- function(X_raw, delta, start, end, M, pre_white, ar_nu
   return(X_subsam)
 }
 
-
+#' @importFrom VineCopula RVineStructureSelect
+#' @importFrom VineCopula D2RVine
+#' @importFrom VineCopula RVineCopSelect
+#' @importFrom VineCopula RVineVuongTest
 VC_WBS_FindPoints <- function(X_raw, delta, M=NA, CDR="D", trunc_tree=NA, family_set=1, pre_white=0, ar_num=1){
   T <- length(unique(X_raw[, 1]))
   if(is.na(M)==TRUE){
     M <- floor(9*log(T))
   }
+  p_X = dim(X_raw)[2] - 1
   X_list = MultiGenRandomInterval(X_raw, delta, 1, T, M, pre_white, ar_num)
   BIC_cut_series <- cut_new_point_series <- c()
   X_list_new <- list()
@@ -82,19 +86,20 @@ VC_WBS_FindPoints <- function(X_raw, delta, M=NA, CDR="D", trunc_tree=NA, family
             #print(c(BIC_de[i],i))
           }else{
             t_point <- i
-            D_1 <- CDVineCopSelect(MultiInd(X_list[[j]], 1, t_Xj+1), type = 2, familyset = unlist(family_set),
-                                   selectioncrit = "BIC", indeptest = TRUE)
-            D_2 <- CDVineCopSelect(MultiInd(X_list[[j]], 1, i - cut_point0[1]+1), type = 2, familyset = unlist(family_set),
-                                   selectioncrit = "BIC", indeptest = TRUE)
-            D_3 <- CDVineCopSelect(MultiInd(X_list[[j]],(i - cut_point0[1] + 1), t_Xj+1), type = 2, familyset = unlist(family_set),
-                                   selectioncrit = "BIC", indeptest = TRUE)
-            BIC_de[i] <-  CDVineBIC(MultiInd(X_list[[j]], 1, t_Xj+1), type = 2,
-                                    family = D_1$family, par = D_1$par,par2 = D_1$par2)$BIC -
+
+            D_X = D2RVine(1:p_X, family = rep(0, p_X*(p_X-1)/2),
+                          par = rep(0, p_X*(p_X-1)/2),
+                          par2 = rep(0, p_X*(p_X-1)/2))
+            BIC_de[i] <- RVineCopSelect(MultiInd(X_list[[j]], 1, t_Xj+1), selectioncrit = "BIC",
+                                        method = "mle", Matrix = D_X$Matrix,familyset = unlist(family_set),
+                                        indeptest = TRUE, trunclevel = trunc_tree)$BIC -
               (
-                CDVineBIC(MultiInd(X_list[[j]], 1, i - cut_point0[1]+1), type = 2,
-                          family = D_2$family, par = D_2$par,par2 = D_2$par2)$BIC +
-                  CDVineBIC(MultiInd(X_list[[j]],(i - cut_point0[1] + 1), t_Xj+1), type = 2,
-                            family = D_3$family, par = D_3$par,par2 = D_3$par2)$BIC
+                RVineCopSelect(MultiInd(X_list[[j]], 1, i - cut_point0[1]+1), selectioncrit = "BIC",
+                               method = "mle", Matrix = D_X$Matrix,familyset = unlist(family_set),
+                               indeptest = TRUE, trunclevel = trunc_tree)$BIC +
+                  RVineCopSelect(MultiInd(X_list[[j]],(i - cut_point0[1] + 1), t_Xj+1), selectioncrit = "BIC",
+                                 method = "mle", Matrix = D_X$Matrix,familyset = unlist(family_set),
+                                 indeptest = TRUE, trunclevel = trunc_tree)$BIC
               )
             #print(c(BIC_de[i],i))
           }

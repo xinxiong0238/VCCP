@@ -1,7 +1,12 @@
+#' @importFrom VineCopula RVineStructureSelect
+#' @importFrom VineCopula D2RVine
+#' @importFrom VineCopula RVineCopSelect
+#' @importFrom VineCopula RVineVuongTest
 VuongMultiGenXLocal <- function(X_raw, delta, CDR, trunc_tree, family_set, pre_white, ar_num) {
   T <- length(unique(X_raw[, 1]))
   subnum <- dim(X_raw)[1] / T
   cut_point0 <- c(1, T + 1)
+  p_X = dim(X_raw)[2] - 1
   X <- X_raw
   if (pre_white == 1) {
     for (i in 1:subnum) {
@@ -51,32 +56,22 @@ VuongMultiGenXLocal <- function(X_raw, delta, CDR, trunc_tree, family_set, pre_w
             )$BIC)
         # print(c(BIC_de[i],i))
       } else {
-        D_1 <- CDVineCopSelect(MultiInd(X, (i - delta), (i + delta)),
-          type = 2, familyset = family_set,
-          selectioncrit = "BIC", indeptest = TRUE
-        )
-        D_2 <- CDVineCopSelect(MultiInd(X, (i - delta), i),
-          type = 2, familyset = family_set,
-          selectioncrit = "BIC", indeptest = TRUE
-        )
-        D_3 <- CDVineCopSelect(MultiInd(X, i, (i + delta)),
-          type = 2, familyset = family_set,
-          selectioncrit = "BIC", indeptest = TRUE
-        )
-        BIC_de[i] <- CDVineBIC(MultiInd(X, (i - delta), (i + delta)),
-          type = 2,
-          family = D_1$family, par = D_1$par, par2 = D_1$par2
-        )$BIC -
+        D_X = D2RVine(1:p_X, family = rep(0, p_X*(p_X-1)/2),
+                      par = rep(0, p_X*(p_X-1)/2),
+                      par2 = rep(0, p_X*(p_X-1)/2))
+        BIC_de[i] <- RVineCopSelect(MultiInd(X, (i - delta), (i + delta)), selectioncrit = "BIC",
+                                    method = "mle", Matrix = D_X$Matrix,familyset = unlist(family_set),
+                                    indeptest = TRUE, trunclevel = trunc_tree)$BIC -
           (
-            CDVineBIC(MultiInd(X, (i - delta), i),
-              type = 2,
-              family = D_2$family, par = D_2$par, par2 = D_2$par2
-            )$BIC +
-              CDVineBIC(MultiInd(X, i, (i + delta)),
-                type = 2,
-                family = D_3$family, par = D_3$par, par2 = D_3$par2
-              )$BIC
+            RVineCopSelect(MultiInd(X, (i - delta), i), selectioncrit = "BIC",
+                           method = "mle", Matrix = D_X$Matrix,familyset = unlist(family_set),
+                           indeptest = TRUE, trunclevel = trunc_tree)$BIC +
+              RVineCopSelect(MultiInd(X, i, (i + delta)), selectioncrit = "BIC",
+                             method = "mle", Matrix = D_X$Matrix,familyset = unlist(family_set),
+                             indeptest = TRUE, trunclevel = trunc_tree)$BIC
           )
+
+
         # print(c(BIC_de[i],i))
       }
     }

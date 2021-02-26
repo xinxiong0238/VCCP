@@ -5,7 +5,10 @@ Genind <- function(ind) {
   }
   return(ind_series)
 }
-
+#' @importFrom VineCopula RVineStructureSelect
+#' @importFrom VineCopula D2RVine
+#' @importFrom VineCopula RVineCopSelect
+#' @importFrom VineCopula RVineVuongTest
 MultiGenpSeudoSample <- function(p, T, X, t_start, t_end) {
   tSam <- stats::rgeom(T, p) + 1
   subnum <- dim(X)[1] / T
@@ -30,12 +33,10 @@ MultiSeudoInd <- function(seudo, t, start, end, subnum) {
 }
 
 
-#' @importFrom VineCopula RVineStructureSelect
-#' @importFrom CDVine CDVineCopSelect
-#' @importFrom CDVine CDVineBIC
 Multi_CDR_NewTestPoint <- function(t_point, t_start, t_end, X, delta, CDR, trunc_tree, family_set, p, N, sig_alpha) {
   T <- length(unique(X[, 1]))
   subnum <- dim(X)[1] / T
+  p_X = dim(X)[2] - 1
   seudo_BIC <- dis_cut_BIC <- c()
   family_set <- unlist(family_set)
   if (CDR == "R") {
@@ -118,62 +119,40 @@ Multi_CDR_NewTestPoint <- function(t_point, t_start, t_end, X, delta, CDR, trunc
       }
       close(pb)
     } else {
-      D_1 <- CDVineCopSelect(MultiInd(X, t_start, t_end),
-        type = 2, familyset = unlist(family_set),
-        selectioncrit = "BIC", indeptest = TRUE
-      )
-      D_2 <- CDVineCopSelect(MultiInd(X, t_start, t_point),
-        type = 2, familyset = unlist(family_set),
-        selectioncrit = "BIC", indeptest = TRUE
-      )
-      D_3 <- CDVineCopSelect(MultiInd(X, t_point, t_end),
-        type = 2, familyset = unlist(family_set),
-        selectioncrit = "BIC", indeptest = TRUE
-      )
-      test_BIC <- CDVineBIC(MultiInd(X, t_start, t_end),
-        type = 2,
-        family = D_1$family, par = D_1$par, par2 = D_1$par2
-      )$BIC -
+      D_X = D2RVine(1:p_X, family = rep(0, p_X*(p_X-1)/2),
+                    par = rep(0, p_X*(p_X-1)/2),
+                    par2 = rep(0, p_X*(p_X-1)/2))
+
+      test_BIC <- RVineCopSelect(MultiInd(X, t_start, t_end), selectioncrit = "BIC",
+                                  method = "mle", Matrix = D_X$Matrix,familyset = unlist(family_set),
+                                  indeptest = TRUE, trunclevel = trunc_tree)$BIC -
         (
-          CDVineBIC(MultiInd(X, t_start, t_point),
-            type = 2,
-            family = D_2$family, par = D_2$par, par2 = D_2$par2
-          )$BIC +
-            CDVineBIC(MultiInd(X, t_point, t_end),
-              type = 2,
-              family = D_3$family, par = D_3$par, par2 = D_3$par2
-            )$BIC
+          RVineCopSelect(MultiInd(X, t_start, t_point), selectioncrit = "BIC",
+                         method = "mle", Matrix = D_X$Matrix,familyset = unlist(family_set),
+                         indeptest = TRUE, trunclevel = trunc_tree)$BIC +
+            RVineCopSelect(MultiInd(X, t_point, t_end), selectioncrit = "BIC",
+                           method = "mle", Matrix = D_X$Matrix,familyset = unlist(family_set),
+                           indeptest = TRUE, trunclevel = trunc_tree)$BIC
         )
+
       pb <- utils::txtProgressBar(style = 3)
       for (i in 1:N) {
         utils::setTxtProgressBar(pb, i / N)
         seudo <- MultiGenpSeudoSample(p, T, X, t_start, t_end)
         t <- t_end - t_start
-        seudo_D1 <- CDVineCopSelect(MultiSeudoInd(seudo, t, 1, t_point - t_start + 1, subnum),
-          type = 2, familyset = unlist(family_set),
-          selectioncrit = "BIC", indeptest = TRUE
-        )
-        seudo_D2 <- CDVineCopSelect(MultiSeudoInd(seudo, t, (t_point - t_start + 1), (t_end - t_start + 1), subnum),
-          type = 2, familyset = unlist(family_set),
-          selectioncrit = "BIC", indeptest = TRUE
-        )
-        seudo_D0 <- CDVineCopSelect(MultiSeudoInd(seudo, t, 1, t_end - t_start + 1, subnum),
-          type = 2, familyset = unlist(family_set),
-          selectioncrit = "BIC", indeptest = TRUE
-        )
-        dis_cut_BIC[i] <- CDVineBIC(MultiSeudoInd(seudo, t, 1, t_end - t_start + 1, subnum),
-          type = 2,
-          family = seudo_D0$family, par = seudo_D0$par, par2 = seudo_D0$par2
-        )$BIC -
+        dis_cut_BIC[i] <- RVineCopSelect(MultiSeudoInd(seudo, t, 1, t_end - t_start + 1, subnum),
+                                         selectioncrit = "BIC",method = "mle",
+                                         Matrix = D_X$Matrix,familyset = unlist(family_set),
+                                         indeptest = TRUE, trunclevel = trunc_tree)$BIC -
           (
-            CDVineBIC(MultiSeudoInd(seudo, t, 1, t_point - t_start + 1, subnum),
-              type = 2,
-              family = seudo_D1$family, par = seudo_D1$par, par2 = seudo_D1$par2
-            )$BIC +
-              CDVineBIC(MultiSeudoInd(seudo, t, (t_point - t_start + 1), (t_end - t_start + 1), subnum),
-                type = 2,
-                family = seudo_D2$family, par = seudo_D2$par, par2 = seudo_D2$par2
-              )$BIC
+            RVineCopSelect(MultiSeudoInd(seudo, t, (t_point - t_start + 1), (t_end - t_start + 1), subnum),
+                           selectioncrit = "BIC",method = "mle",
+                           Matrix = D_X$Matrix,familyset = unlist(family_set),
+                           indeptest = TRUE, trunclevel = trunc_tree)$BIC +
+              RVineCopSelect(MultiSeudoInd(seudo, t, (t_point - t_start + 1), (t_end - t_start + 1), subnum),
+                             selectioncrit = "BIC",method = "mle",
+                             Matrix = D_X$Matrix,familyset = unlist(family_set),
+                             indeptest = TRUE, trunclevel = trunc_tree)$BIC
           )
       }
       close(pb)
@@ -185,14 +164,14 @@ Multi_CDR_NewTestPoint <- function(t_point, t_start, t_end, X, delta, CDR, trunc
 
 
 
-#' @importFrom VineCopula RVineStructureSelect
-#' @importFrom CDVine CDVineCopSelect
-#' @importFrom CDVine CDVineBIC
+
 TestPoints.Boot <- function(v_t_point, X_raw, delta, CDR = "D", trunc_tree = NA, family_set = 1,
                             pre_white = 0, ar_num = 1, p = 0.3, N = 100, sig_alpha = 0.05) {
   T <- length(unique(X_raw[, 1]))
   subnum <- dim(X_raw)[1] / T
   X <- X_raw
+  v_t_point = sort(v_t_point)
+  if(sum(c(v_t_point,T)-c(0,v_t_point)<dim(X_raw)[2]-1)>0) stop("Some candidates are too close to each other or to the boundary (distance < p)")
   if (pre_white == 1) {
     for (i in 1:subnum) {
       armodel <- stats::ar(X_raw[((i - 1) * T + 1):(i * T), -1], FALSE, ar_num)
