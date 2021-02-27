@@ -135,17 +135,17 @@ Xin Xiong, Ivor Cribben (\email{cribben@ualberta.ca})
 data <- cbind(1:180, mvn.sim.2.cps(180, 8, seed = 101))
 T <- 180
 
-## Change point detection using VCCP
-result.NV <- vccp.fun(data, method = "NBS", delta = 30, test = "V")
+## Change point detection using VCCP (it may take several minutes to complete...)
+#result.NV <- vccp.fun(data, method = "NBS", delta = 30, test = "V")
 ## Plot the results
-getTestPlot(result.NV)
-title("VCCP: NBS + Vuong")
+#getTestPlot(result.NV)
+#title("VCCP: NBS + Vuong")
 
 ## Change point detection using NBS and stationary bootstrap for inference
-result.NB <- vccp.fun(data, method = "NBS", delta = 30, test = "B")
+#result.NB <- vccp.fun(data, method = "NBS", delta = 30, test = "B")
 ## Plot the results
-getTestPlot(result.NB)
-title("VCCP: NBS + Stationary Bootstrap")
+#getTestPlot(result.NB)
+#title("VCCP: NBS + Stationary Bootstrap")
 
 }
 \seealso{
