@@ -3,25 +3,19 @@ VC_NBS <- function(X_raw, delta, test = "V", CDR = "D", trunc_tree = NA,
                          p = 0.3, N = 100, sig_alpha = 0.05) {
   result = VC.NBS.FindPoints(X_raw, delta, CDR, trunc_tree, family_set,
                              pre_white, ar_num)
-  if(CDR!="C"&CDR!="D"&CDR!="R"){
-    return(cat("You can only specify CDR as 'C', 'D' or 'R'!"))
+  if(test=="V"){
+    infer =  TestPoints.Vuong(result, X_raw, delta, CDR,
+                              trunc_tree, family_set,
+                              pre_white, ar_num, sig_alpha)
+    return(infer)
+
   }else{
-    if(test=="V"){
-      infer =  TestPoints.Vuong(result, X_raw, delta, CDR,
-                                trunc_tree, family_set,
-                                pre_white, ar_num, sig_alpha)
+    if(test=="B"){
+      infer = TestPoints.Boot(result, X_raw, delta, CDR,
+                              trunc_tree, family_set,
+                              pre_white, ar_num, p, N, sig_alpha)
       return(infer)
 
-    }else{
-      if(test=="B"){
-        infer = TestPoints.Boot(result, X_raw, delta, CDR,
-                                trunc_tree, family_set,
-                                pre_white, ar_num, p, N, sig_alpha)
-        return(infer)
-
-      }else{
-        return(cat("You can only specify test as 'B' or 'V'!"))
-      }
     }
   }
 }

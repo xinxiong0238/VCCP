@@ -42,8 +42,9 @@ VC_WBS_FindPoints <- function(X_raw, delta, M=NA, CDR="D", trunc_tree=NA, family
   BIC_cut_series <- cut_new_point_series <- c()
   X_list_new <- list()
   k=0
+  message("Search for pseudo sample data...")
   for (j in 1:length(X_list)) {
-    cat(paste("Search for pseudo sample data (",j,"/",length(X_list),") ..."),fill = TRUE)
+    #message(paste("Search for pseudo sample data (",j,"/",length(X_list),") ..."),fill = TRUE)
     BIC_de <- rep(0, T)
     t_Xj <- length(unique(X_list[[j]][,1]))
     cut_point0 <- c(min(unique(X_list[[j]][,1])),max(unique(X_list[[j]][,1]))+1)
@@ -109,18 +110,18 @@ VC_WBS_FindPoints <- function(X_raw, delta, M=NA, CDR="D", trunc_tree=NA, family
     max_BIC_de <- max(BIC_de)
     if(max_BIC_de > 0){
       k=k+1
-     if(which.max(BIC_de) %in% cut_new_point_series){
-        cat(paste("Find candidate", k,
-                  ": t =", which.max(BIC_de),"(duplicated) \n \n"), fill = TRUE)
-      }else{
-        cat(paste("Find candidate", k,
-                  ": t =", which.max(BIC_de),"\n \n"), fill = TRUE)
-      }
+     # if(which.max(BIC_de) %in% cut_new_point_series){
+     #    cat(paste("Find candidate", k,
+     #              ": t =", which.max(BIC_de),"(duplicated) \n \n"), fill = TRUE)
+     #  }else{
+     #    cat(paste("Find candidate", k,
+     #              ": t =", which.max(BIC_de),"\n \n"), fill = TRUE)
+     #  }
       X_list_new[[k]] <- X_list[[j]]
       BIC_cut_series[k] <- max(BIC_de)
       cut_new_point_series[k] <- which.max(BIC_de)
     }else{
-      cat(paste("No candidate is found in this sample data. \n\n"), fill = TRUE)
+      # cat(paste("No candidate is found in this sample data. \n\n"), fill = TRUE)
     }
   }
   return(list(X_list_new, cut_new_point_series, BIC_cut_series))
@@ -162,7 +163,7 @@ VC_WBS_Boot <- function(X_raw, delta, M=NA, CDR="D", trunc_tree=NA,
   tema <- as.data.frame(matrix(0, 1, 5))
   names(tema) <- c("t", "reduced BIC", "Lower_CI", "Upper_CI", "judgement")
   if(length(ind)==0){
-    cat(paste("No candidate is found. \n \n"),fill = TRUE)
+    message("No candidate is found.")
     return(tema[-1,0])
   }else{
     for (i in 1:length(ind)) {
@@ -184,9 +185,10 @@ VC_WBS_Boot <- function(X_raw, delta, M=NA, CDR="D", trunc_tree=NA,
     sig_cut_point <- c()
     kk <- rep(1, length(rank_ind_ma[, 1]))
     aa = 0
+    message("Perform stationary bootstrap test on candidates...")
     while (test_I == "significant") {
       aa = aa + 1
-      cat(paste("Test for candidate", aa, ": t =", rank_cut_point_series[k]), fill = TRUE)
+      # cat(paste("Test for candidate", aa, ": t =", rank_cut_point_series[k]), fill = TRUE)
       t_start <- rank_X_list[[k]][1,1]
       t_end <- rank_X_list[[k]][dim(rank_X_list[[k]])[1],1] + 1
       test_CI <- Multi_CDR_NewTestPoint(rank_cut_point_series[k] - t_start + 1,
@@ -195,7 +197,7 @@ VC_WBS_Boot <- function(X_raw, delta, M=NA, CDR="D", trunc_tree=NA,
 
       if(test_CI[1] > test_CI[3]){
         test_I <- "significant"
-        cat("Significant! \n\n")
+        #cat("Significant! \n\n")
         sig_cut_point <- c(sig_cut_point, rank_cut_point_series[k])
         tema <- rbind(tema, c(rank_cut_point_series[k], test_CI, test_I))
         tema[,1] <- as.numeric(tema[,1])
@@ -207,7 +209,7 @@ VC_WBS_Boot <- function(X_raw, delta, M=NA, CDR="D", trunc_tree=NA,
         if(sum(kk!=0)==0) test_I <- "not significant" else k <- which.max(kk)
       }else{
         test_I <- "not significant"
-        cat("Insignificant! \n\n")
+        #cat("Insignificant! \n\n")
         tema <- rbind(tema, c(rank_cut_point_series[k], test_CI, test_I))
         tema[,1] <- as.numeric(tema[,1])
         tema[,2] <- as.numeric(tema[,2])
@@ -240,7 +242,7 @@ VC_WBS_Vuong <- function(X_raw, delta, M=NA, CDR="D", trunc_tree=NA,
   tema <- as.data.frame(matrix(0, 1, 4))
   names(tema) <- c("t", "left Schwarz p", "right Schwarz p", "judgement")
   if(length(ind)==0){
-    cat(paste("No candidate is found. \n \n"),fill = TRUE)
+    message("No candidate is found.")
     return(tema[-1,0])
   }else{
     for (i in 1:length(ind)) {
@@ -262,9 +264,10 @@ VC_WBS_Vuong <- function(X_raw, delta, M=NA, CDR="D", trunc_tree=NA,
     sig_cut_point <- c()
     kk <- rep(1, length(rank_ind_ma[, 1]))
     aa = 0
+    message("Perform Vuong test on candidates...")
     while (test_I == "significant") {
       aa = aa + 1
-      cat(paste("Test for candidate", aa, ": t =", rank_cut_point_series[k]), fill = TRUE)
+      # cat(paste("Test for candidate", aa, ": t =", rank_cut_point_series[k]), fill = TRUE)
       t_start <- rank_X_list[[k]][1,1]
       t_end <- rank_X_list[[k]][dim(rank_X_list[[k]])[1],1] + 1
       test_CI <- Vuong_Multi_CDR_NewTestPoint(rank_cut_point_series[k] - t_start + 1,
@@ -274,7 +277,7 @@ VC_WBS_Vuong <- function(X_raw, delta, M=NA, CDR="D", trunc_tree=NA,
       if(test_CI[1] < 0 & abs(test_CI[1]) < sig_alpha &
          test_CI[2] < 0 & abs(test_CI[2]) < sig_alpha ){
         test_I <- "significant"
-        cat("Significant! \n\n")
+        # cat("Significant! \n\n")
         sig_cut_point <- c(sig_cut_point, rank_cut_point_series[k])
         tema <- rbind(tema, c(rank_cut_point_series[k], test_CI, test_I))
         tema[,1] <- as.numeric(tema[,1])
@@ -284,7 +287,7 @@ VC_WBS_Vuong <- function(X_raw, delta, M=NA, CDR="D", trunc_tree=NA,
                          rank_ind_ma[, 2] < rank_cut_point_series[k])
         if(sum(kk!=0)==0) test_I <- "not significant" else k <- which.max(kk)
       }else{
-        cat("Insignificant! \n\n")
+        # cat("Insignificant! \n\n")
         test_I <- "not significant"
         tema <- rbind(tema, c(rank_cut_point_series[k], test_CI, test_I))
         tema[,1] <- as.numeric(tema[,1])
@@ -301,26 +304,20 @@ VC_WBS_Vuong <- function(X_raw, delta, M=NA, CDR="D", trunc_tree=NA,
 VC_WBS <- function(X_raw, delta, M = NA, test = "V", CDR = "D", trunc_tree = NA,
                    family_set = 1, pre_white = 0, ar_num = 1,
                    p = 0.3, N = 100, sig_alpha = 0.05) {
-  if (CDR != "C" & CDR != "D" & CDR != "R") {
-    return(cat("You can only specify CDR as 'C', 'D' or 'R'!"))
+  if (test == "V") {
+    infer <- VC_WBS_Vuong(
+      X_raw, delta, M, CDR, trunc_tree,
+      family_set, pre_white, ar_num, sig_alpha
+    )
+    return(infer)
   } else {
-    if (test == "V") {
-      infer <- VC_WBS_Vuong(
-        X_raw, delta, M, CDR, trunc_tree,
-        family_set, pre_white, ar_num, sig_alpha
+    if (test == "B") {
+      infer <- VC_WBS_Boot(
+        X_raw, delta, M, CDR,
+        trunc_tree, family_set,
+        pre_white, ar_num, p, N, sig_alpha
       )
       return(infer)
-    } else {
-      if (test == "B") {
-        infer <- VC_WBS_Boot(
-          X_raw, delta, M, CDR,
-          trunc_tree, family_set,
-          pre_white, ar_num, p, N, sig_alpha
-        )
-        return(infer)
-      } else {
-        return(cat("You can only specify test as 'B' or 'V'!"))
-      }
     }
   }
 }

@@ -98,22 +98,22 @@
 #'
 #' @export
 #' @examples
+#' \donttest{
 #' ## Simulate MVN data with 2 change points
 #' data <- cbind(1:180, mvn.sim.2.cps(180, 8, seed = 101))
 #' T <- 180
-#'
 #' ## Change point detection using VCCP (it may take several minutes to complete...)
-#' #result.NV <- vccp.fun(data, method = "NBS", delta = 30, test = "V")
+#' result.NV <- vccp.fun(data, method = "NBS", delta = 30, test = "V")
 #' ## Plot the results
-#' #getTestPlot(result.NV)
+#' getTestPlot(result.NV)
 #' #title("VCCP: NBS + Vuong")
 #'
 #' ## Change point detection using NBS and stationary bootstrap for inference
-#' #result.NB <- vccp.fun(data, method = "NBS", delta = 30, test = "B")
+#' result.NB <- vccp.fun(data, method = "NBS", delta = 30, test = "B")
 #' ## Plot the results
-#' #getTestPlot(result.NB)
-#' #title("VCCP: NBS + Stationary Bootstrap")
-#'
+#' getTestPlot(result.NB)
+#' title("VCCP: NBS + Stationary Bootstrap")
+#' }
 #' @seealso  \code{\link{getTestPlot}}
 #' @section Author(s):
 #'  Xin Xiong, Ivor Cribben (\email{cribben@@ualberta.ca})
@@ -123,13 +123,13 @@ vccp.fun <- function(X, method = 'NBS', delta = 30, G = 0.1, M = NA, test = "V",
                    family_set = 1, pre_white = 0, ar_num = 1,
                    p = 0.3, N = 100, sig_alpha = 0.05) {
   if (method != "NBS" & method != "OBS" & method != "MOSUM" & method != "WBS"){
-    return(cat("You can only specify method as 'NBS', 'OBS', 'MOSUM' or 'WBS'!"))
+    stop("You can only specify method as 'NBS', 'OBS', 'MOSUM' or 'WBS'!")
   }else{
     if (CDR != "C" & CDR != "D" & CDR != "R") {
-      return(cat("You can only specify CDR as 'C', 'D' or 'R'!"))
+      stop("You can only specify CDR as 'C', 'D' or 'R'!")
     } else {
       if (test != "V" & test != 'B') {
-        return(cat("You can only specify test as 'B' or 'V'!"))
+       stop("You can only specify test as 'B' or 'V'!")
       } else {
         re.list = list()
         t = proc.time()

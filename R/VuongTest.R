@@ -107,8 +107,8 @@ TestPoints.Vuong <- function(v_t_point, X_raw, delta, CDR = "D", trunc_tree = NA
     test_result[, 1] <- v_t_point
     a <- c(1, v_t_point, T + 1)
     full_point <- a[!duplicated(a)]
+    message("Perform Vuong test on candidates...")
     for (i in 1:length(v_t_point)) {
-      cat(paste("Test for candidate", i, ": t =", v_t_point[i]), fill = TRUE)
       test_result[i, 2:3] <- Vuong_Multi_CDR_NewTestPoint(
         full_point[i + 1], full_point[i],
         full_point[i + 2], X, delta, CDR, trunc_tree, family_set
@@ -117,10 +117,8 @@ TestPoints.Vuong <- function(v_t_point, X_raw, delta, CDR = "D", trunc_tree = NA
         test_result[i, 3] < 0 & abs(test_result[i, 3]) < sig_alpha
       ) {
         test_result[i, 4] <- "significant"
-        cat("Significant! \n\n")
       } else {
         test_result[i, 4] <- "not significant"
-        cat("Insignificant! \n\n")
       }
     }
     names(test_result) <- c("t", "left Schwarz p", "right Schwarz p", "judgement")

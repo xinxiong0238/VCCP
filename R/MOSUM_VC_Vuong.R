@@ -99,7 +99,7 @@ FindLocalMax <- function(BIC_re, range_set) {
 
 VC_MOSUM_Vuong <- function(X_raw, delta, G = 0.1, CDR = "D", trunc_tree = NA, family_set = 1, pre_white = 0, ar_num = 1,
                            p = 0.3, N = 100, sig_alpha = 0.05) {
-  cat("MOSUM search ...", fill = TRUE)
+  message("MOSUM search ...")
   re <- VuongMultiGenXLocal(X_raw, delta, CDR, trunc_tree, family_set, pre_white, ar_num)
   X <- re[[2]]
   T <- length(unique(X_raw[, 1]))
@@ -110,7 +110,7 @@ VC_MOSUM_Vuong <- function(X_raw, delta, G = 0.1, CDR = "D", trunc_tree = NA, fa
   ini_po <- a[!duplicated(a)]
   points0 <- FindLocalMax(BIC_re, ini_po)
   if (length(points0) == 0) {
-    cat(paste("No candidate is found. \n \n"), fill = TRUE)
+    message("No candidate is found.")
     return(matrix(0, 0, 4))
   } else {
     if (length(points0) == 1) {

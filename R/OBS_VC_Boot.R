@@ -24,7 +24,7 @@ VC_OBS_Boot <- function(X_raw, delta, CDR = "D", trunc_tree = NA, family_set = 1
   names(TestMatrix) <- c("t", "reduced BIC", "Lower_CI", "Upper_CI", "judgement")
   while (BIC_cut > 0) {
     k <- k + 1
-    cat(paste("Binary search, round",k,"..."),fill = TRUE)
+    message(paste("Binary search + stationary bootstrap test for round",k,"..."))
     BIC_de <- rep(0, T)
     for (i in delta:(T - delta)) {
       if (sum(is.element((i - delta + 1):(i + delta), cut_point0)) != 0) {
@@ -88,12 +88,11 @@ VC_OBS_Boot <- function(X_raw, delta, CDR = "D", trunc_tree = NA, family_set = 1
     BIC_cut <- max(BIC_de)
     if (BIC_cut > 0) {
       cut_new_point <- which.max(BIC_de)
-      cat(paste("Test for candidate", k, ": t =", cut_new_point), fill = TRUE)
+      #message(paste("Perform stationary bootstrap test on candidate", k, ": t =", cut_new_point))
       t_before <- cut_point0[which.max(cut_new_point <= cut_point0) - 1]
       t_after <- cut_point0[which.max(cut_new_point <= cut_point0)]
       testPoint <- Multi_CDR_NewTestPoint(cut_new_point, t_before, t_after, X, delta, CDR, trunc_tree, family_set, p, N, sig_alpha)
       if (testPoint[1] >= testPoint[3]) {
-        cat("Significant! \n\n")
         cut_point0 <- sort(c(cut_point0, cut_new_point))
         TestMatrix <- rbind(TestMatrix, c(cut_new_point, testPoint, "significant"))
         TestMatrix[, 1] <- as.numeric(TestMatrix[, 1])
@@ -101,7 +100,6 @@ VC_OBS_Boot <- function(X_raw, delta, CDR = "D", trunc_tree = NA, family_set = 1
         TestMatrix[, 3] <- as.numeric(TestMatrix[, 3])
         TestMatrix[, 4] <- as.numeric(TestMatrix[, 4])
       } else {
-        cat("Insignificant! \n\n")
         TestMatrix <- rbind(TestMatrix, c(cut_new_point, testPoint, "not significant"))
         TestMatrix[, 1] <- as.numeric(TestMatrix[, 1])
         TestMatrix[, 2] <- as.numeric(TestMatrix[, 2])
@@ -110,7 +108,6 @@ VC_OBS_Boot <- function(X_raw, delta, CDR = "D", trunc_tree = NA, family_set = 1
         return(TestMatrix[-1, ])
       }
     } else {
-      cat(paste("No more candidate is found. \n \n"),fill = TRUE)
       return(TestMatrix[-1, ])
     }
   }

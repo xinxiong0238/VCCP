@@ -55,9 +55,9 @@ Multi_CDR_NewTestPoint <- function(t_point, t_start, t_end, X, delta, CDR, trunc
         selectioncrit = "BIC", method = "mle",
         indeptest = TRUE, trunclevel = trunc_tree
       )$BIC)
-    pb <- utils::txtProgressBar(style = 3)
+    #pb <- utils::txtProgressBar(style = 3)
     for (i in 1:N) {
-      utils::setTxtProgressBar(pb, i / N)
+      #utils::setTxtProgressBar(pb, i / N)
       seudo <- MultiGenpSeudoSample(p, T, X, t_start, t_end)
       t <- t_end - t_start
       seudo_BIC[i] <- RVineStructureSelect(MultiSeudoInd(seudo, t, 1, t_point - t_start + 1, subnum),
@@ -77,7 +77,7 @@ Multi_CDR_NewTestPoint <- function(t_point, t_start, t_end, X, delta, CDR, trunc
       )$BIC
       dis_cut_BIC[i] <- seudo_BIC0 - seudo_BIC[i]
     }
-    close(pb)
+    #close(pb)
   } else {
     if (CDR == "C") {
       BIC0 <- RVineStructureSelect(MultiInd(X, t_start, t_end),
@@ -95,9 +95,9 @@ Multi_CDR_NewTestPoint <- function(t_point, t_start, t_end, X, delta, CDR, trunc
           selectioncrit = "BIC", method = "mle",
           indeptest = TRUE, trunclevel = trunc_tree
         )$BIC)
-      pb <- utils::txtProgressBar(style = 3)
+      #pb <- utils::txtProgressBar(style = 3)
       for (i in 1:N) {
-        utils::setTxtProgressBar(pb, i / N)
+        #utils::setTxtProgressBar(pb, i / N)
         seudo <- MultiGenpSeudoSample(p, T, X, t_start, t_end)
         t <- t_end - t_start
         seudo_BIC[i] <- RVineStructureSelect(MultiSeudoInd(seudo, t, 1, t_point - t_start + 1, subnum),
@@ -117,7 +117,7 @@ Multi_CDR_NewTestPoint <- function(t_point, t_start, t_end, X, delta, CDR, trunc
         )$BIC
         dis_cut_BIC[i] <- seudo_BIC0 - seudo_BIC[i]
       }
-      close(pb)
+      #close(pb)
     } else {
       D_X = D2RVine(1:p_X, family = rep(0, p_X*(p_X-1)/2),
                     par = rep(0, p_X*(p_X-1)/2),
@@ -135,9 +135,7 @@ Multi_CDR_NewTestPoint <- function(t_point, t_start, t_end, X, delta, CDR, trunc
                            indeptest = TRUE, trunclevel = trunc_tree)$BIC
         )
 
-      pb <- utils::txtProgressBar(style = 3)
       for (i in 1:N) {
-        utils::setTxtProgressBar(pb, i / N)
         seudo <- MultiGenpSeudoSample(p, T, X, t_start, t_end)
         t <- t_end - t_start
         dis_cut_BIC[i] <- RVineCopSelect(MultiSeudoInd(seudo, t, 1, t_end - t_start + 1, subnum),
@@ -155,7 +153,6 @@ Multi_CDR_NewTestPoint <- function(t_point, t_start, t_end, X, delta, CDR, trunc
                              indeptest = TRUE, trunclevel = trunc_tree)$BIC
           )
       }
-      close(pb)
     }
   }
 
@@ -189,18 +186,16 @@ TestPoints.Boot <- function(v_t_point, X_raw, delta, CDR = "D", trunc_tree = NA,
     test_result[, 1] <- v_t_point
     a <- c(1, v_t_point, T + 1)
     full_point <- a[!duplicated(a)]
+    message("Perform stationary bootstrap test on candidates...")
     for (i in 1:length(v_t_point)) {
-      cat(paste("Test for candidate", i, ": t =", v_t_point[i]), fill = TRUE)
       test_result[i, 2:4] <- Multi_CDR_NewTestPoint(
         full_point[i + 1], full_point[i],
         full_point[i + 2], X, delta, CDR, trunc_tree, family_set, p, N, sig_alpha
       )
       if (test_result[i, 2] > test_result[i, 4]) {
         test_result[i, 5] <- "significant"
-        cat("Significant! \n\n")
       } else {
         test_result[i, 5] <- "not significant"
-        cat("Insignificant! \n\n")
       }
     }
     names(test_result) <- c("t", "reduced BIC", "Lower_CI", "Upper_CI", "judgement")

@@ -30,7 +30,7 @@ VC.NBS.FindPoints <- function(X_raw, delta, CDR = "D", trunc_tree = NA, family_s
   X[, -1] <- VineCopula::pobs(X[, -1])
   while (BIC_cut > 0) {
     k <- k + 1
-    cat(paste("Binary search, round",k,"..."),fill = TRUE)
+    message(paste("Binary search, round",k,"..."))
     BIC_de <- rep(0, T)
     for (i in delta:(T - delta)) {
       if (sum(is.element((i - delta + 1):(i + delta), cut_point0)) != 0) {
@@ -96,11 +96,11 @@ VC.NBS.FindPoints <- function(X_raw, delta, CDR = "D", trunc_tree = NA, family_s
     }
     BIC_cut <- max(BIC_de)
     cut_new_point <- which.max(BIC_de)
-    if(BIC_cut > 0){
-      cat(paste("Find candidate",k,": t =",cut_new_point,"\n \n"),fill = TRUE)
-    }else{
-      cat(paste("No more candidate is found. \n \n"),fill = TRUE)
-    }
+    # if(BIC_cut > 0){
+    #   message(paste("Find candidate",k,": t =",cut_new_point))
+    # }else{
+    #   message(paste("No more candidate is found. \n \n"),fill = TRUE)
+    # }
     cut_point0 <- sort(c(cut_point0, cut_new_point))
   }
   return(c(cut_point0[cut_point0 != cut_new_point & cut_point0 != T + 1 & cut_point0 != 1]))
