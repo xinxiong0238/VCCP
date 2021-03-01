@@ -37,8 +37,7 @@ devtools::install_github("xinxiong0238/VCCP")
 ```
 ## Example
 
-These are some basic examples which show you how to detect changes in the functional connectivity of multivariate time series using different binary segmentation methods 
-and inference tests.
+These are some basic examples which show you how to detect changes in the functional connectivity of multivariate time series using different binary segmentation methods and inference tests.
 
 ```{r example}
 library(vccp)
