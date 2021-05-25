@@ -2,16 +2,16 @@
 #'
 #' This function detects multiple change points in the vine
 #' copula structure of a multivariate time series using
-#' vine copulas, an adapted binary segmentation algorithm, and a
-#' likelihood ratio test for inference. Other segmentation methods
-#' are also available as well as the stationary bootstrap for inference.
+#' vine copulas, various state-of-the-art segmentation methods to identify
+#' multiple change points, and a likelihood ratio test or the stationary bootstrap
+#' for inference.
 #'
 #' The time series \code{X_t} is of dimensionality p and we are
 #' looking for changes in the vine copula structure between
 #' the different time series components \code{X_{t}^{(1)}, X_{t}^{(2)},
-#'  ..., X_{t}^{(p)}}. VCCP uses vine copulas, an adapted binary segmentation
-#'  algorithm, and a likelihood ratio test for inference. Other segmentation
-#'  methods are also available as well as the stationary bootstrap for inference.
+#'  ..., X_{t}^{(p)}}. VCCP uses vine copulas, various state-of-the-art
+#'  segmentation methods to identify multiple change points,
+#'  and a likelihood ratio test or the stationary bootstrap for inference.
 #'
 #' @param X A numerical matrix representing the multivariate
 #' time series, with the columns representing its components.
@@ -20,8 +20,8 @@
 #'
 #' @param method A character string, which defines the
 #'  segmentation method. If \code{method} = "NBS", which is the
-#'  default method, then the adapted new binary segmentation is used.
-#'  Similarly, if \code{method}="OBS", "MOSUM" or "WBS", then binary
+#'  default method, then the adapted binary segmentation is used.
+#'  Similarly, if \code{method} = "OBS", "MOSUM" or "WBS", then binary
 #'  segmentation, MOSUM and wild binary segmentation are used, respectively.
 #'
 #' @param delta A positive integer number with default value equal to 30.
@@ -37,7 +37,7 @@
 #'
 #' @param M A positive integer with default value equal to floor(9*log(T)) (T is the length of the time series).
 #'  It represents the number of sub-samples in WBS when
-#'  \code{method}="WBS" is chosen.
+#'  \code{method} = "WBS" is chosen.
 #'
 #' @param test A character string, which defines the inference
 #'  method used. If \code{test} = "V", which is the default method,
@@ -63,7 +63,7 @@
 #' @param pre_white A positive integer, which defines whether
 #'  the data is pre-whitened. If \code{pre-white} = 0, which is the
 #'  default value, no pre-whitening is performed. If
-#'  \code{pre_white} =1, an autoregressive time series model
+#'  \code{pre_white} = 1, an autoregressive time series model
 #'  (method: yule-walker) is used to preprocess the raw data.
 #'
 #' @param ar_num A positive integer, which defines the maximum
@@ -74,11 +74,11 @@
 #' @param p A positive real number between 0 and 1 which is
 #'  defined as the block size in the stationary boostrap
 #'  method (\code{rgeom(T,p)}) if \code{test} = "B" is chosen.
-#'  If \code{p}=0.3, which is the default value, each resampled block
+#'  If \code{p} = 0.3, which is the default value, each resampled block
 #'  has 1/0.3 time points on average.
 #'
 #' @param N A positive integer, which defines the number
-#'  of the stationary bootstrap resamples used. The default value is \code{N=100}.
+#'  of the stationary bootstrap resamples used. The default value is \code{N} = 100.
 #'
 #' @param sig_alpha A positive real number between 0 and 1, which
 #'  defines the significance level of the inference test.
@@ -90,7 +90,7 @@
 #'  \code{loc_of_cpts} \tab The locations of the detected change points. \cr
 #'  \code{no_of_cpts} \tab The number of detected change points. \cr
 #'  \code{test_df} \tab A dataframe containing the test result.  \cr
-#'  \code{compute_time} \tab Time (in minutes), to run \code{vccp.fun}. \cr
+#'  \code{compute_time} \tab Time (in minutes) to run \code{vccp.fun}. \cr
 #'  \code{T} \tab The length of the time series data. \cr
 #'  \code{sig_alpha} \tab The significance level for the inference test. \cr
 #' }
@@ -118,7 +118,7 @@
 #' @section Author(s):
 #'  Xin Xiong, Ivor Cribben (\email{cribben@@ualberta.ca})
 #' @section References:
-#'  "Beyond linear dynamic functional connectivity: a vine copula change point model", Xiong and Cribben (2021), preprint.
+#'  "Beyond linear dynamic functional connectivity: a vine copula change point model", Xiong and Cribben (2021), bioRxiv 2021.04.25.441254.
 vccp.fun <- function(X, method = 'NBS', delta = 30, G = 0.1, M = NA, test = "V", CDR = "D", trunc_tree = NA,
                    family_set = 1, pre_white = 0, ar_num = 1,
                    p = 0.3, N = 100, sig_alpha = 0.05) {
