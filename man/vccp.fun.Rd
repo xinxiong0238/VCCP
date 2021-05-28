@@ -42,7 +42,7 @@ vine copula model.}
 \item{G}{A positive real number between 0 and 1 with default value equal to 0.1.
 It is used to define the moving sum bandwidth relative to \code{T} in MOSUM when
 \code{method} = "MOSUM" is chosen. Alternatively, a positive integer
-less than half of the time series length can be set to define the absolute bandwith.}
+less than half of the time series length can be set to define the absolute bandwidth.}
 
 \item{M}{A positive integer with default value equal to floor(9*log(T)) (T is the length of the time series).
 It represents the number of sub-samples in WBS when
@@ -81,7 +81,7 @@ If \code{ar_num} = 1, which is the default value, then an AR(1)
 model is fit to the data.}
 
 \item{p}{A positive real number between 0 and 1 which is
-defined as the block size in the stationary boostrap
+defined as the block size in the stationary bootstrap
 method (\code{rgeom(T,p)}) if \code{test} = "B" is chosen.
 If \code{p} = 0.3, which is the default value, each resampled block
 has 1/0.3 time points on average.}
