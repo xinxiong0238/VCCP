@@ -14,7 +14,7 @@
 #' @section vccp functions:
 #' \link{mvn.sim.2.cps}, \link{getTestPlot} and \link{vccp.fun}
 #' @examples
-#' # See examples in the function \link{vccp.fun}.
+#' # See examples in the function vccp.fun.
 #'
 #' @section Author(s):
 #'  Xin Xiong, Ivor Cribben (\email{cribben@@ualberta.ca})

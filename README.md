@@ -21,7 +21,7 @@ You can install the released version of VCCP from
 [CRAN](https://CRAN.R-project.org) with:
 
 ``` r
-install.packages("VCCP") #not released yet!
+install.packages("VCCP")
 ```
 
 And the development version from [GitHub](https://github.com/) with:

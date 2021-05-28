@@ -32,6 +32,6 @@ Xin Xiong, Ivor Cribben (\email{cribben@ualberta.ca})
 }
 
 \examples{
-# See examples in the function \link{vccp.fun}.
+# See examples in the function vccp.fun.
 
 }
