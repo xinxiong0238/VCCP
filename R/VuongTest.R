@@ -129,7 +129,7 @@ TestPoints.Vuong <- function(v_t_point, X_raw, delta, CDR = "D", trunc_tree = NA
 
 GetTestPlot.Vuong <- function(test_result, T, sig_alpha = 0.05) {
   if (dim(test_result)[1] == 0) {
-    plot(1:T,1:T,type = "n",yaxt="n",ylab = NA)
+    graphics::plot(1:T,1:T,type = "n",yaxt="n",ylab = NA)
     graphics::text("No candidate is found.")
   }
   else {
@@ -143,7 +143,7 @@ GetTestPlot.Vuong <- function(test_result, T, sig_alpha = 0.05) {
     RightSch[test_result[, 1]] <- log(abs(1 / test_result[, 3]))
     y_min <- min(LeftSch, RightSch)
     y_max <- max(LeftSch, RightSch)
-    plot(1:T, rep(1, T),
+    graphics::plot(1:T, rep(1, T),
       ylab = c("log(1/p_value)"), type = "n", cex = .5, pch = 16,
       ylim = c(max(0.1, y_min - 0.1), y_max + 6)
     )

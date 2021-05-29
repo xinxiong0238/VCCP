@@ -105,7 +105,7 @@ VC_MOSUM_Vuong <- function(X_raw, delta, G = 0.1, CDR = "D", trunc_tree = NA, fa
   T <- length(unique(X_raw[, 1]))
   BIC_re <- re[[1]]
   te <- mosum::mosum(BIC_re, G)
-  plot(te, display = "data", sub = "MOSUM segmentation")
+  graphics::plot(te, display = "data", sub = "MOSUM segmentation")
   a <- sort(c(1, T + 1, te$cpts))
   ini_po <- a[!duplicated(a)]
   points0 <- FindLocalMax(BIC_re, ini_po)

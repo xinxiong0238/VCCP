@@ -203,11 +203,9 @@ TestPoints.Boot <- function(v_t_point, X_raw, delta, CDR = "D", trunc_tree = NA,
   }
 }
 
-
-
 GetTestPlot.Boot <- function(test_result, T) {
   if (dim(test_result)[1] == 0) {
-    plot(1:T,1:T,type = "n",yaxt="n",ylab = NA)
+    graphics::plot(1:T,1:T,type = "n",yaxt="n",ylab = NA)
     graphics::text("No candidate is found.")
   }
   else {
